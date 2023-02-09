@@ -1,0 +1,79 @@
+{
+  "id": "3868496",
+  "name": "admin",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "11488197",
+      "name": "checkstand",
+      "font_class": "checkstand",
+      "unicode": "e770",
+      "unicode_decimal": 59248
+    },
+    {
+      "icon_id": "15188300",
+      "name": "customer",
+      "font_class": "customer",
+      "unicode": "e6db",
+      "unicode_decimal": 59099
+    },
+    {
+      "icon_id": "11882431",
+      "name": "商户批量入驻",
+      "font_class": "shanghupiliangruzhu",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "11488136",
+      "name": "category products",
+      "font_class": "Similarproducts",
+      "unicode": "e766",
+      "unicode_decimal": 59238
+    },
+    {
+      "icon_id": "12753449",
+      "name": "用户管理",
+      "font_class": "yonghuguanli_huaban",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "15592939",
+      "name": "admin-line",
+      "font_class": "admin-line",
+      "unicode": "ec92",
+      "unicode_decimal": 60562
+    },
+    {
+      "icon_id": "20112482",
+      "name": "bx-category-alt",
+      "font_class": "bx-category-alt",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "683385",
+      "name": "积分商城",
+      "font_class": "jifenshangcheng",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "765334",
+      "name": "商城",
+      "font_class": "shouye",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "2803738",
+      "name": "股票",
+      "font_class": "gupiao",
+      "unicode": "e6ad",
+      "unicode_decimal": 59053
+    }
+  ]
+}
