@@ -1,14 +1,19 @@
 import React from 'react'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Form, Input, InputNumber, message, Upload } from 'antd';
+import { Form, Input, InputNumber, message, Switch, Upload } from 'antd';
 import { useState } from 'react';
 import constant from '../../utils/constant';
 import { useMemo } from 'react';
 import { useEffect } from 'react';
 import MyCRUDDataDisplayerHandler from './MyCRUDDataDisplayerHandler';
+import { MinusCircleOutlined, } from "@ant-design/icons";
+import { Divider, Button, Select, } from "antd";
+import MySpace from '../Layout/MySpace';
 
-
-const { LOGO, TEXT, TEXTAREA, ICON, POSTIVE_INTEGER, NUMBER, INTEGER, CUSTOM_CONTROLLED_ITEM } = constant
+const { LOGO, TEXT, TEXTAREA, ICON, POSTIVE_INTEGER,
+    NUMBER, INTEGER, CUSTOM_CONTROLLED_ITEM,
+    MULTI_INPUT, SWTICH
+} = constant
 
 const normalFormItemMap = {
     [TEXT]: ({ itemProps, entryProps }) => (
@@ -94,7 +99,69 @@ const normalFormItemMap = {
             <Input {...entryProps} />
         </Form.Item>
     ),
+    [MULTI_INPUT]: ({ itemProps, entryProps }) => (
+        <Form.List {...itemProps}
+            rules={[
+                {
+                    validator: async (_, values) => {
+                        if (!values || values.length < 1) {
+                            return Promise.reject(new Error('Must have at least one item'));
+                        }
+                    },
+                },
+            ]}
+        >
+            {(fields, { add, remove }, { errors }) => {
+                return <>
+                    {fields.map((field, index) => (
+                        <Form.Item
+                            label={index !== 0 ? '' : <MySpace>
+                                {itemProps.label}
+                                <PlusOutlined onClick={() => add()} />
+                            </MySpace>
 
+                            }
+                            required={true}
+                            key={field.key}
+                        >
+                            <Form.Item
+                                {...field}
+                                validateTrigger={['onChange', 'onBlur']}
+                                rules={[
+                                    {
+                                        required: true,
+                                        whitespace: true,
+                                        message: "Cannot be empty",
+                                    },
+                                ]}
+                                noStyle
+                            >
+                                <Input
+                                    style={{
+                                        width: '60%',
+                                    }}
+                                />
+                            </Form.Item>
+                            {fields.length > 1 ? (
+                                <MinusCircleOutlined
+                                    className="dynamic-delete-button"
+                                    onClick={() => remove(field.name)}
+                                />
+                            ) : null}
+                        </Form.Item>
+                    ))}
+                    {/* <Form.Item>
+                        <Form.ErrorList errors={errors} />
+                    </Form.Item> */}
+                </>
+            }}
+        </Form.List>
+    ),
+    [SWTICH]: ({ itemProps, entryProps }) => (
+        <Form.Item {...itemProps}>
+            <Switch {...entryProps} />
+        </Form.Item>
+    ),
 }
 
 const fileFormItemMap = {
@@ -134,7 +201,6 @@ export default function MyDataEntryHandler({
             message: 'Could not be empty',
         }],
         key,
-
         isRelationalData,
         shouldDisplay,
         displayerProps

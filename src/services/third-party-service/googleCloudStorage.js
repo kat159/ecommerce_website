@@ -1,9 +1,9 @@
 // @ts-ignore
 /* eslint-disable */
-import { async } from '@firebase/util';
-import { request } from '@umijs/max';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, uploadString } from "firebase/storage";
-
+import {async} from '@firebase/util';
+import {request} from '@umijs/max';
+import {getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, uploadString} from "firebase/storage";
+import constant from "@/utils/constant";
 
 const imageMeta = {
   contentType: 'image/jpeg', // file type will be validated in form/Uploader
@@ -12,13 +12,14 @@ const imageMeta = {
 const referencePath = {
   brandLogo: 'brand-logo',
   categoryIcon: 'category-icon',
+  productImage: 'product-image',
+  skuImage: 'sku-image',
   image: 'image',
 }
 
-
 export default {
-  async addImage(file) {
-    return _addFile(file, referencePath.image, imageMeta);
+  async addImage(file, referencePath=referencePath.image, metadata=imageMeta, fileType = constant.BASE64) {
+    return _addFile(file, referencePath.image, metadata, fileType);
   },
   async addBrandLogo(file) {
     return _addFile(file, referencePath.brandLogo, imageMeta);
@@ -37,42 +38,42 @@ export default {
   /** add file to firebase storage(firestore) */
   // add if no original file, delete + add if original file changed, do nothing if no change
   async saveFile(newFile, originalFile, referencePath, metadata) {
-  if (originalFile) { // has original file
-    if (originalFile === newFile) { // no change
-      return originalFile;
-    } else { // delete original file
-      await deleteFile(originalFile);
+    if (originalFile) { // has original file
+      if (originalFile === newFile) { // no change
+        return originalFile;
+      } else { // delete original file
+        await deleteFile(originalFile);
+        return _addFile(newFile, referencePath, metadata);
+      }
+    } else { // no original file
       return _addFile(newFile, referencePath, metadata);
     }
-  } else { // no original file
-    return _addFile(newFile, referencePath, metadata);
   }
 }
-}
 
-const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 
   const byteCharacters = atob(b64Data);
   const byteArrays = [];
 
   for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
 
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-      }
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
 
-      const byteArray = new Uint8Array(byteNumbers);
+    const byteArray = new Uint8Array(byteNumbers);
 
-      byteArrays.push(byteArray);
+    byteArrays.push(byteArray);
   }
 
   const blob = new Blob(byteArrays, {type: contentType});
   return blob;
 }
 
-async function _addFile(file, referencePath, metadata) {
+async function _addFile(file, referencePath, metadata, fileType = constant.BASE64) {
 
   // Create a root reference
   const storage = getStorage();
@@ -83,10 +84,12 @@ async function _addFile(file, referencePath, metadata) {
 
   // Upload the file and metadata
   // const uploadTask = uploadBytesResumable(logoRef, file, metadata); // blob
-  const uploadTask = uploadString(logoRef, file, 'data_url') // base64 url
+  const uploadTask =
+    fileType === constant.BASE64
+      ? uploadString(logoRef, file, 'data_url') // base64 url
+      : uploadBytesResumable(logoRef, file, metadata);  // BLOB
 
   const snapshot = await uploadTask;
-
 
   const downloadURL = await getDownloadURL(snapshot.ref);  // the same as logoRef declared above
 

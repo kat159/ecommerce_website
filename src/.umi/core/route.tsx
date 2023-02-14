@@ -5,7 +5,7 @@ import React from 'react';
 
 export async function getRoutes() {
   return {
-    routes: {"1":{"path":"/user","layout":false,"id":"1"},"2":{"name":"login","path":"/user/login","parentId":"1","id":"2"},"3":{"path":"/welcome","name":"welcome","icon":"smile","parentId":"ant-design-pro-layout","id":"3"},"4":{"path":"/admin","name":"admin","icon":"crown","access":"canAdmin","parentId":"ant-design-pro-layout","id":"4"},"5":{"path":"/admin","redirect":"/admin/sub-page","parentId":"4","id":"5"},"6":{"path":"/admin/sub-page","name":"sub-page","parentId":"4","id":"6"},"7":{"name":"list.table-list","icon":"table","path":"/list","parentId":"ant-design-pro-layout","id":"7"},"8":{"name":"pms","path":"/ecommerce","parentId":"ant-design-pro-layout","id":"8"},"9":{"name":"category","path":"category","parentId":"8","id":"9"},"10":{"name":"brand","path":"brand","parentId":"8","id":"10"},"11":{"name":"test","path":"test","parentId":"8","id":"11"},"12":{"path":"/","redirect":"/welcome","parentId":"ant-design-pro-layout","id":"12"},"13":{"path":"*","layout":false,"id":"13"},"ant-design-pro-layout":{"id":"ant-design-pro-layout","path":"/","isLayout":true},"umi/plugin/openapi":{"path":"/umi/plugin/openapi","id":"umi/plugin/openapi"}},
+    routes: {"1":{"path":"/user","layout":false,"id":"1"},"2":{"name":"login","path":"/user/login","parentId":"1","id":"2"},"3":{"path":"/welcome","name":"welcome","icon":"smile","parentId":"ant-design-pro-layout","id":"3"},"4":{"path":"/admin","name":"admin","icon":"crown","access":"canAdmin","parentId":"ant-design-pro-layout","id":"4"},"5":{"path":"/admin","redirect":"/admin/sub-page","parentId":"4","id":"5"},"6":{"path":"/admin/sub-page","name":"sub-page","parentId":"4","id":"6"},"7":{"name":"list.table-list","icon":"table","path":"/list","parentId":"ant-design-pro-layout","id":"7"},"8":{"name":"pms","path":"/ecommerce","parentId":"ant-design-pro-layout","id":"8"},"9":{"name":"category","path":"category","parentId":"8","id":"9"},"10":{"name":"brand","path":"brand","parentId":"8","id":"10"},"11":{"name":"product","path":"product","parentId":"8","id":"11"},"12":{"name":"publish","path":"publish","parentId":"11","id":"12"},"13":{"name":"manage","path":"manage","parentId":"11","id":"13"},"14":{"name":"demo","path":"demo","parentId":"8","id":"14"},"15":{"path":"/","redirect":"/welcome","parentId":"ant-design-pro-layout","id":"15"},"16":{"path":"*","layout":false,"id":"16"},"ant-design-pro-layout":{"id":"ant-design-pro-layout","path":"/","isLayout":true},"umi/plugin/openapi":{"path":"/umi/plugin/openapi","id":"umi/plugin/openapi"}},
     routeComponents: {
 '1': React.lazy(() => import( './EmptyRoute')),
 '2': React.lazy(() => import(/* webpackChunkName: "p__User__Login__index" */'@/pages/User/Login/index.tsx')),
@@ -15,11 +15,14 @@ export async function getRoutes() {
 '6': React.lazy(() => import(/* webpackChunkName: "p__Admin" */'@/pages/Admin.tsx')),
 '7': React.lazy(() => import(/* webpackChunkName: "p__TableList__index" */'@/pages/TableList/index.tsx')),
 '8': React.lazy(() => import( './EmptyRoute')),
-'9': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement__CategoryTest" */'@/pages/ProductManagement/CategoryTest.jsx')),
-'10': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement__BrandTest" */'@/pages/ProductManagement/BrandTest.jsx')),
-'11': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement__Test" */'@/pages/ProductManagement/Test.jsx')),
-'12': React.lazy(() => import( './EmptyRoute')),
-'13': React.lazy(() => import(/* webpackChunkName: "p__404" */'@/pages/404.tsx')),
+'9': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement2__Category" */'@/pages/ProductManagement2/Category.jsx')),
+'10': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement2__Brand" */'@/pages/ProductManagement2/Brand.jsx')),
+'11': React.lazy(() => import( './EmptyRoute')),
+'12': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement2__Product__Publish" */'@/pages/ProductManagement2/Product/Publish.jsx')),
+'13': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement2__Product__Manage" */'@/pages/ProductManagement2/Product/Manage.jsx')),
+'14': React.lazy(() => import(/* webpackChunkName: "p__ProductManagement__Demo" */'@/pages/ProductManagement/Demo.jsx')),
+'15': React.lazy(() => import( './EmptyRoute')),
+'16': React.lazy(() => import(/* webpackChunkName: "p__404" */'@/pages/404.tsx')),
 'ant-design-pro-layout': React.lazy(() => import(/* webpackChunkName: "umi__plugin-layout__Layout" */'D:/CODING_STUDY/fontend/ecommerce_website/src/.umi/plugin-layout/Layout.tsx')),
 'umi/plugin/openapi': React.lazy(() => import(/* webpackChunkName: "umi__plugin-openapi__openapi" */'D:/CODING_STUDY/fontend/ecommerce_website/src/.umi/plugin-openapi/openapi.tsx')),
 },

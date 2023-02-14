@@ -1,3 +1,4 @@
+
 import { DeleteOutlined, EditOutlined, PlusCircleFilled, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import React from 'react'
 import MyCRUDDataPresentationHandler from '../../components/RelationalCRUD/MyCRUDDataDisplayerHandler'
@@ -171,7 +172,9 @@ export default function Test() {
             {
                 dataFieldName: 'selectableValueList',
                 label: 'Selective Value List',
-                type: constant.POSTIVE_INTEGER,
+                type: constant.MULTI_INPUT,
+                shouldRender: (fieldsValue) => fieldsValue.selective === 1,
+                // required: false // not set to false will assume required
             },
             {
                 dataFieldName: 'type',
@@ -194,7 +197,6 @@ export default function Test() {
         titleFieldName: 'name',
         sortOrderFieldName: 'sort',
 
-        fakeSubmit: true,
         service: {
             get: attrGroupService.get12,
             getAll: catogoryService.getAllAttrGroup,
@@ -234,6 +236,7 @@ export default function Test() {
         levelFieldName: 'level', // the reponse data(database) field name that will be displayed as the level of the node
         sortOrderFieldName: 'sort',
         maxLevel: 3,
+
         service: { // the service interface that provides the CRUD operations
             get: catogoryService.get10,
             getAll: catogoryService.getAll,
@@ -244,13 +247,12 @@ export default function Test() {
         // insertIconRender: (props) => <PlusOutlined {...props} />,       // Optional, the icon for insert
         // editIconRender: (props) => <EditOutlined {...props} />,         // Optional, the icon for edit
         // deleteIconRender: (props) => <DeleteOutlined {...props} />,       // Optional, the icon for delete
-        bulkEdit: false,
-        fakeSubmit: false,
+        fakeSubmit: false, // submit change directly to server 
 
-        formProps: {
-            type: constant.POP_FORM,
-            // title: 'Category',  // the title of the form
-        },
+        // formProps: {
+        //     type: constant.POP_FORM,
+        //     // title: 'Category',  // the title of the form
+        // },
         formType: constant.POP_FORM,
         editableFields: [       // the fields props for the editing form
             {

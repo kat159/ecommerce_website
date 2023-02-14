@@ -1,9 +1,14 @@
 export default {
   'menu.pms': 'Product Management',
-  'menu.pms.category': 'Category',
-  'menu.pms.brand': 'Brand',
-  'menu.pms.test': 'test',
-  
+  'menu.pms.category': 'Category & Attribute',
+  'menu.pms.brand': 'Brand & Category',
+  'menu.pms.product': 'Product',
+  'menu.pms.product.manage': 'Manage',
+  'menu.pms.product.publish': 'Publish',
+  'menu.pms.test': 'Test',
+  'menu.pms.test2': 'Test2',
+  'menu.pms.demo': 'DEMO',
+
   'menu.welcome': 'Welcome',
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Home',

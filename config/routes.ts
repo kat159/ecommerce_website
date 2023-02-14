@@ -58,17 +58,44 @@ export default [
       {
         name: 'category',
         path: 'category',
-        component: './ProductManagement/CategoryTest.jsx',
-      },  
+        component: './ProductManagement2/Category.jsx',
+      },
       {
         name: 'brand',
         path: 'brand',
-        component: './ProductManagement/BrandTest.jsx',
+        component: './ProductManagement2/Brand.jsx',
       },
       {
-        name: 'test',
-        path: 'test',
-        component: './ProductManagement/Test.jsx',
+        name: 'product',
+        path: 'product',
+        // component: './ProductManagement2/Product.jsx',
+        routes: [
+          {
+            name: 'publish',
+            path: 'publish',
+            component: './ProductManagement2/Product/Publish.jsx',
+          },
+          {
+            name: 'manage',
+            path: 'manage',
+            component: './ProductManagement2/Product/Manage.jsx',
+          }
+        ]
+      },
+      // {
+      //   name: 'test',
+      //   path: 'test',
+      //   component: './ProductManagement/Test.jsx',
+      // },
+      // {
+      //   name: 'test2',
+      //   path: 'test2',
+      //   component: './ProductManagement/Test2.jsx',
+      // },
+      {
+        name: 'demo',
+        path: 'demo',
+        component: './ProductManagement/Demo.jsx',
       },
     ]
   },

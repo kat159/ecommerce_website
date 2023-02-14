@@ -14,7 +14,7 @@ import { useForm } from 'antd/es/form/Form'
 import { max } from 'lodash'
 import { drop } from 'lodash'
 import MySpace from '../Layout/MySpace'
-
+import { v4 as uuidv4 } from 'uuid';
 
 const { TREE, TAG_GROUP, TABLE } = constant
 const typeMapper = {
@@ -41,7 +41,7 @@ export default function MyCRUDDataDisplayerHandler({
     editableFields,
     formType,
     bulkEdit = false,
-    fakeSubmit = false,
+    fakeSubmit = true,
     serviceKey,
     rules,
     key,
@@ -49,10 +49,10 @@ export default function MyCRUDDataDisplayerHandler({
     ...props // props for the displayer component
 }) {
     const { childrenFieldName = 'children', idFieldName = 'id', titleFieldName = 'title', parantIdFieldName = 'parentId' } = props
-    console.log('formType', formType)
+
     const originalService = crudManager.getCrudService(serviceKey)
     const popConfirmWhenDelete = !bulkEdit && !fakeSubmit // if both false, will delete from database immediately, popconfirm first
-    const { sortOrderFieldName } = props
+    const { sortOrderFieldName, entityName } = props
     let service = originalService
     if (primaryId) { // if primaryId is provided, it's relational data
         const newService = {
@@ -60,8 +60,8 @@ export default function MyCRUDDataDisplayerHandler({
             get: (id) => originalService.get(id),
             getAll: () => originalService.getAll(primaryId),
             add: (dto) => originalService.add(dto, primaryId),
-            update: (dto, oldDto) => originalService.update(dto, oldDto),
-            remove: (dto) => originalService.remove(dto, primaryId),
+            update: (dto) => originalService.update(dto),
+            remove: (id) => originalService.remove(id),
         }
         service = newService
     } else {
@@ -71,26 +71,37 @@ export default function MyCRUDDataDisplayerHandler({
     const [status, setStatus] = useState(IDLE)
     const [draggable, setDraggable] = useState(sortOrderFieldName ? true : false)
     const [editingNode, setEditingNode] = useState(null)
-
+    const [tmpInsertId, setTmpInsertId] = useState(null)
     useEffect(() => {
         fetchData()
     }, [])
 
     const fetchData = async () => {
+
+
         const data = await service.getAll()
         setData(data)
     }
 
-    const onClickInsert = (nodeData) => {
-        if (nodeData) {
-            service.get(nodeData[idFieldName]).then((data) => {
-                setEditingNode(data)
-                setStatus(INSERT)
-            })
-        } else {
-            setEditingNode(null)
-            setStatus(INSERT)
+    const onClickInsert = (dataToRecord) => { // some data related to the clicked record, e.g. the new level of tree
+        // if (nodeData) {
+        //     service.get(nodeData[idFieldName]).then((data) => {
+        //         setEditingNode(data)
+        //         setStatus(INSERT)
+        //     })
+        // } else {
+        //     setEditingNode(null)
+        //     setStatus(INSERT)
+        // }
+        if (!dataToRecord) {
+            dataToRecord = {}
         }
+        service.add(dataToRecord).then(tmpId => {
+            dataToRecord[idFieldName] = tmpId
+            setEditingNode(dataToRecord)
+            setTmpInsertId(tmpId)
+            setStatus(INSERT)
+        })
     }
 
     const onClickEdit = (nodeData) => {
@@ -101,14 +112,12 @@ export default function MyCRUDDataDisplayerHandler({
     }
 
     const onClickDelete = (nodeData) => {
-        service.get(nodeData[idFieldName]).then((dto) => {
-            service.remove(dto).then(() => {
-                if (!fakeSubmit && !bulkEdit) {
-                    service.submit().then(() => fetchData())
-                } else {
-                    fetchData()
-                }
-            })
+        service.remove(nodeData.id).then(() => {
+            if (!fakeSubmit && !bulkEdit) {
+                service.submit().then(() => fetchData())
+            } else {
+                fetchData()
+            }
         })
     }
 
@@ -116,19 +125,20 @@ export default function MyCRUDDataDisplayerHandler({
         /**
          * 1. fakeSubmit && bulkEdit -> add/update when confirmAll button clicked, never submit in this component
          * 2. fakeSubmit && !bulkEdit -> add/update here, never submit in this component
-         * 3. !fakeSubmit && bulkEdit -> add/update here, create confirmAll button to trigger submit, cancelAll button to trigger service.cancel
+         * 3. !fakeSubmit && bulkEdit -> create a temporary cache service, add/update here, merge temporary cache to current cache when confirmAll button clicked
          * 4. !fakeSubmit && !bulkEdit -> add/update here & submit here
          */
+
         if (status === INSERT) {
-            if (type === TREE) {
-                data[parantIdFieldName] = editingNode[idFieldName] // set the parent id of the new node to the id of the node that triggers the insert
-            }
-            await service.add(data) // Insert the new node
+            // if (type === TREE) {
+            //     data[parantIdFieldName] = editingNode[idFieldName] // set the parent id of the new node to the id of the node that triggers the insert
+            // }
+            await service.add({ ...editingNode, ...data }) // Insert the new node
+            // // await service.add(data) // Insert the new node
         } else if (status === EDIT) {
             data[idFieldName] = editingNode[idFieldName] // set the id of the node to be updated
-            await service.update(data, editingNode)
+            await service.update({ ...editingNode, ...data }) // Update the node
         }
-
         if (!fakeSubmit && !bulkEdit) {
             await service.submit()
         }
@@ -145,7 +155,19 @@ export default function MyCRUDDataDisplayerHandler({
          * case2: screen edit, pixel edit --> 取消自己的editMap + 取消parentId=curId的所有修改edit/add/delete
          */
         setStatus(IDLE);
-        service.cancel(editingNode[idFieldName]) // 取消子节点的新增或编辑
+        // form中，修改的是外键表，
+        // form confirm时，把外键表的cache合并到这里
+        // form cancel時，要把外鍵表的修改删掉（不要删除这里的cache)
+        //      同一个field的其他修改，在submit的时候就合并到这里了，所以不用管
+        //      不同field的修改，也不用管。因为出现这个field的form。就说明其他field要么submit，要么cancel。如果submit，就已经合并在这， 如果是cancel，就已经清除
+        if (status === INSERT) {
+            if (tmpInsertId === null || tmpInsertId === undefined) {
+                console.error('tmpInsertId is null or undefined')
+            }
+            service.remove(tmpInsertId)
+            setTmpInsertId(null)
+        }
+        service.clearChildren()
     }
 
     return (
@@ -169,7 +191,7 @@ export default function MyCRUDDataDisplayerHandler({
                     editingNode={editingNode}
                     onSubmit={onFormSubmit}
                     onCancel={onFormCancel}
-                    title={status === INSERT ? 'Insert' : 'Edit'}
+                    title={(status === INSERT ? 'Insert' : 'Edit') + ` ${entityName}`}
                     type={formType}
                     crudManager={crudManager}
                 />
@@ -245,7 +267,11 @@ function MyTree(props) {
                 message.error(`Cannot insert node at level ${nodeData.level + 1} because the max level is ${maxLevel}`)
                 return
             } else {
-                onClickInsert(nodeData)
+                const toInsert = {
+                    [parantIdFieldName]: nodeData[idFieldName],
+                    [levelFieldName]: nodeData[levelFieldName] + 1,
+                }
+                onClickInsert(toInsert)
             }
         }
     }
@@ -296,11 +322,7 @@ function MyTree(props) {
 
     const onDrop = async (info) => {
         const { dragNode, node: dropNode, dropPosition, dropToGap } = info
-        console.log('=======================')
-        console.log('dragNode', dragNode)
-        console.log('dropNode', dropNode)
-        console.log('dropPosition', dropPosition)
-        console.log('dropToGap', dropToGap)
+
         const _checkMaxLevel = () => {
             const _getDepth = (curNode) => {
                 if (!curNode) return 0
@@ -326,7 +348,7 @@ function MyTree(props) {
             const _updateLevel = (root, level) => {
                 const oldDto = { ...root }
                 const newDto = { ...root, level }
-                console.log('upding', newDto, oldDto)
+
                 promises.push(service.update(newDto, oldDto))
                 root.children.forEach(child => _updateLevel(child, level + 1))
             }
@@ -341,7 +363,7 @@ function MyTree(props) {
 
             }
             _updateParentId()
-            console.log('update level', dragNode, dropNode, dropToGap, dropNode.level)
+
             _updateLevel(dragNode, dropToGap ? dropNode.level : dropNode.level + 1)
             return Promise.all(promises)
         }
@@ -400,7 +422,7 @@ function MyTagGroup(props) {
         editIconRender = (props) => <EditOutlined {...props} />,
         deleteIconRender = (props) => <DeleteOutlined {...props} />,
     } = props
-    const { key, formItemLabel } = props
+    const { key, formItemLabel, entityName } = props
 
 
     const onInsert = (dto) => {
@@ -460,7 +482,7 @@ function MyTagGroup(props) {
         let res;
         if (formItemLabel) {
             const label = <MySpace >
-                <span>{formItemLabel}</span>
+                <span>{entityName}</span>
                 {insertIconRender({
                     className: 'my-click-icon',
                     onClick: onInsert()

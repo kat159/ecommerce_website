@@ -15,7 +15,7 @@ export default function MyCRUDFormHandler({
     status,
     onSubmit,
     type = POP_FORM,
-    editableFields, 
+    editableFields,
     editingNode,
     ...props
 }) {
@@ -24,12 +24,17 @@ export default function MyCRUDFormHandler({
 
     useEffect(() => {
         if (status === constant.INSERT) { // init all form fields to empty 
-            editableFields.forEach(field => {
-                if (!field.isRelationalData) {
-                    if (editingNode)
-                        editingNode[field.dataFieldName] = undefined
-                }
-            })
+            if (editingNode) {
+                editableFields.forEach(field => {
+                    if (!field.isRelationalData) {
+                        if (field.type === constant.MULTI_INPUT && field.required !== false) {
+                            editingNode[field.dataFieldName] = [null]
+                        } else {
+                            editingNode[field.dataFieldName] = undefined
+                        }
+                    }
+                })
+            }
         }
         form.setFieldsValue(editingNode)
     }, [editingNode])
@@ -37,15 +42,13 @@ export default function MyCRUDFormHandler({
     const onFormSubmit = async () => {
         const values = await form.validateFields()
 
-        const returnValues = {}
-        for (const field of editableFields) {
-            if (!field.isRelationalData) { // not relational data, return to parent component to save into database
-                returnValues[field.dataFieldName] = values[field.dataFieldName]
-            } else { // relational data, do nothing
-
-            }
-
-        }
+        // const returnValues = {}
+        // for (const field of editableFields) {
+        //     if (!field.isRelationalData) { // not relational data, return to parent component to save into database
+        //         returnValues[field.dataFieldName] = values[field.dataFieldName]
+        //     } else { // relational data, do nothing
+        //     }
+        // }
         await onSubmit(values);
         form.resetFields();
     }
@@ -77,7 +80,7 @@ function MyPopForm({
     const onModalOk = async () => {
         onSubmit()
     }
-    console.log('editableFields', editableFields)
+
     return (
         <Modal
             open={true}

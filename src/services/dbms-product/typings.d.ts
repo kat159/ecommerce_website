@@ -7,6 +7,15 @@ declare namespace API {
     id: number;
   };
 
+  type addAllProductParams = {
+    id: number;
+  };
+
+  type addCategoryBrandParams = {
+    id: number;
+    cid: number;
+  };
+
   type AttributeDto = {
     id?: number;
     attributeGroupId?: number;
@@ -14,7 +23,7 @@ declare namespace API {
     icon?: string;
     searchStatus?: number;
     selective?: number;
-    selectableValueList?: string;
+    selectableValueList?: string[];
     type?: number;
     status?: number;
     display?: number;
@@ -39,6 +48,14 @@ declare namespace API {
     sort?: number;
   };
 
+  type BrandPaginationDto = {
+    current?: number;
+    pageSize?: number;
+    orderFields?: string[];
+    orderTypes?: string[];
+    name?: string;
+  };
+
   type CategoryBrandDto = {
     id?: number;
     brandId?: number;
@@ -57,6 +74,15 @@ declare namespace API {
     icon?: string;
   };
 
+  type CategoryPaginationDto = {
+    current?: number;
+    pageSize?: number;
+    orderFields?: string[];
+    orderTypes?: string[];
+    level?: number;
+    name?: string;
+  };
+
   type get10Params = {
     id: number;
   };
@@ -70,6 +96,10 @@ declare namespace API {
   };
 
   type get13Params = {
+    id: number;
+  };
+
+  type get14Params = {
     id: number;
   };
 
@@ -114,13 +144,34 @@ declare namespace API {
     params: PaginationDto;
   };
 
+  type getAllAttrGroupWithAttrListParams = {
+    id: number;
+  };
+
   type getAllAttributeParams = {
     id: number;
     params: PaginationDto;
   };
 
+  type getAllCategoryBrandParams = {
+    id: number;
+  };
+
+  type getAllParams = {
+    params: CategoryPaginationDto;
+  };
+
+  type getAllProductParams = {
+    id: number;
+  };
+
   type getParams = {
     id: number;
+  };
+
+  type Image = {
+    uid?: string;
+    url?: string;
   };
 
   type page10Params = {
@@ -132,10 +183,14 @@ declare namespace API {
   };
 
   type page12Params = {
-    params: PaginationDto;
+    params: BrandPaginationDto;
   };
 
   type page13Params = {
+    params: PaginationDto;
+  };
+
+  type page14Params = {
     params: PaginationDto;
   };
 
@@ -201,6 +256,11 @@ declare namespace API {
     display?: number;
   };
 
+  type ProductAttribute = {
+    id?: number;
+    values?: string[];
+  };
+
   type ProductDescriptionDto = {
     productId?: number;
     description?: string;
@@ -222,14 +282,77 @@ declare namespace API {
     productId?: number;
     name?: string;
     url?: string;
-    displayOrder?: number;
+    sort?: number;
     isDefault?: number;
   };
 
-  type ProductReviewDto = {
+  type ProductPublishDto = {
+    brandId?: number;
+    categoryId?: number;
+    name?: string;
+    description?: string;
+    productImageList?: Image[];
+    saleAttrs?: ProductAttribute[];
+    specAttrs?: ProductAttribute[];
+    skuImageList?: Image[];
+    skuList?: Sku[];
+  };
+
+  type Result = {
+    success?: boolean;
+    code?: number;
+    msg?: string;
+    data?: Record<string, any>;
+  };
+
+  type SaleAttr = {
+    id?: number;
+    value?: string;
+  };
+
+  type Sku = {
+    saleAttrs?: SaleAttr[];
+    name?: string;
+    description?: string;
+    title?: string;
+    subtitle?: string;
+    imageIdList?: string[];
+    price?: string;
+    giftCardBonus?: string;
+    primeDiscount?: string;
+  };
+
+  type SkuAttributeValueDto = {
     id?: number;
     skuId?: number;
+    attributeId?: number;
+    attributeName?: string;
+    attributeValue?: string;
+    sort?: number;
+  };
+
+  type SkuDto = {
+    id?: number;
     productId?: number;
+    name?: string;
+    description?: string;
+    defaultImg?: string;
+    title?: string;
+    subtitle?: string;
+    price?: number;
+    saleCount?: number;
+  };
+
+  type SkuImageDto = {
+    id?: number;
+    img?: string;
+    sort?: number;
+    isDefault?: number;
+  };
+
+  type SkuReviewDto = {
+    id?: number;
+    skuId?: number;
     productName?: string;
     memberNickname?: string;
     rating?: number;
@@ -244,47 +367,16 @@ declare namespace API {
     commentType?: number;
   };
 
-  type Result = {
-    success?: boolean;
-    code?: number;
-    msg?: string;
-    data?: Record<string, any>;
-  };
-
-  type ReviewReplyDto = {
+  type SkuReviewReplyDto = {
     id?: number;
-    reviewId?: number;
+    skuReviewId?: number;
     replyId?: number;
   };
 
-  type SkuAttrValueDto = {
-    id?: number;
+  type SkuSkuImageDto = {
     skuId?: number;
-    attrId?: number;
-    attrName?: string;
-    attrValue?: string;
-    displayOrder?: number;
-  };
-
-  type SkuDto = {
+    skuImageId?: number;
     id?: number;
-    productId?: number;
-    categoryId?: number;
-    brandId?: number;
-    name?: string;
-    description?: string;
-    defaultImg?: string;
-    title?: string;
-    subtitle?: string;
-    price?: number;
-    saleCount?: number;
-  };
-
-  type SkuImageDto = {
-    id?: number;
-    skuId?: number;
-    img?: string;
     sort?: number;
-    isDefault?: number;
   };
 }
