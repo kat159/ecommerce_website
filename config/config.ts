@@ -1,11 +1,11 @@
 // https://umijs.org/config/
-import { defineConfig } from '@umijs/max';
-import { join } from 'path';
+import {defineConfig} from '@umijs/max';
+import {join} from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
-const { REACT_APP_ENV = 'dev' } = process.env;
+const {REACT_APP_ENV = 'dev'} = process.env;
 
 export default defineConfig({
   /**
@@ -30,6 +30,12 @@ export default defineConfig({
    */
   // umi routes: https://umijs.org/docs/routing
   routes,
+  // routes: [
+  //   {
+  //     path: '/',
+  //     component: '../layout/ECommerceFrontLayout',
+  //   }
+  // ],
   /**
    * @name 主题的配置
    * @description 虽然叫主题，但是其实只是 less 的变量设置
@@ -125,7 +131,7 @@ export default defineConfig({
    */
   headScripts: [
     // 解决首次加载时白屏的问题
-    { src: '/scripts/loading.js', async: true },
+    {src: '/scripts/loading.js', async: true},
   ],
   //================ pro 插件配置 =================
   presets: ['umi-presets-pro'],

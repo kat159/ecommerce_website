@@ -12,6 +12,22 @@
  */
 export default [
   {
+    path: '/ecommerce/front',
+    component: '../layouts/ECommerceFrontLayout',
+    layout: false,
+    routes: [
+      {
+        path: '',
+        redirect: 'category',
+        // component: './ECommerceFront/Home.jsx',
+      },
+      {
+        path: 'category',
+        component: './ECommerceFront/ShopByCategory/index.jsx',
+      }
+    ]
+  },
+  {
     path: '/user',
     layout: false,
     routes: [
@@ -78,7 +94,7 @@ export default [
           {
             name: 'manage',
             path: 'manage',
-            component: './ProductManagement2/Product/Manage.jsx',
+            component: './ProductManagement2/Product/Manage2.jsx',
           }
         ]
       },

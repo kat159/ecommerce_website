@@ -15,7 +15,7 @@ export default function () {
     const attrGroupService = productService.attributeGroupController;
 
     const service = {
-        get: catogoryService.get10,
+        get: catogoryService.get,
         add: catogoryService.add10,
         update: catogoryService.update10,
         remove: catogoryService.delete10,
@@ -25,7 +25,7 @@ export default function () {
     const idFieldName = 'id';
     const titleFieldName = 'name';
     const parentIdFieldName = 'parentId';
-    
+
     const editableFields = [
         {
             dataFieldName: 'name',
@@ -45,7 +45,7 @@ export default function () {
                 addAll: catogoryService.addAttrGroupList,
                 update: attrGroupService.update12,
                 remove: attrGroupService.delete12,
-                
+
             },
             // dataRender: (text, record, index) => <>{text}</>,
             dataEntryRender: (props) => <MyCRUDTagGroup {...props} service={service} />

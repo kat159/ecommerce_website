@@ -11,8 +11,8 @@
 //         add: brandService.add11,
 //         update: brandService.update11,
 //         remove: brandService.delete11,
-//         page: brandService.page11,
-//         get: brandService.get11,
+//         page: brandService.page,
+//         get: brandService.get,
 //     }
 
 //     const tableFields = [

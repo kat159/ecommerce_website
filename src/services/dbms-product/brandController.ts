@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 PUT /product/brand */
-export async function updateAll12(body: API.BrandDto[], options?: { [key: string]: any }) {
+export async function updateAll(body: API.BrandDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/brand', {
     method: 'PUT',
     headers: {
@@ -15,7 +15,7 @@ export async function updateAll12(body: API.BrandDto[], options?: { [key: string
 }
 
 /** 此处后端没有提供注释 POST /product/brand */
-export async function addAll12(body: API.BrandDto[], options?: { [key: string]: any }) {
+export async function addAll(body: API.BrandDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/brand', {
     method: 'POST',
     headers: {
@@ -27,7 +27,7 @@ export async function addAll12(body: API.BrandDto[], options?: { [key: string]: 
 }
 
 /** 此处后端没有提供注释 DELETE /product/brand */
-export async function removeAll12(body: number[], options?: { [key: string]: any }) {
+export async function removeAll(body: number[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/brand', {
     method: 'DELETE',
     headers: {
@@ -39,7 +39,7 @@ export async function removeAll12(body: number[], options?: { [key: string]: any
 }
 
 /** 此处后端没有提供注释 GET /product/brand/${param0} */
-export async function get12(
+export async function get(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.get12Params,
   options?: { [key: string]: any },
@@ -114,7 +114,7 @@ export async function addAllProduct(
 }
 
 /** 此处后端没有提供注释 GET /product/brand/page */
-export async function page12(
+export async function page(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.page12Params,
   options?: { [key: string]: any },

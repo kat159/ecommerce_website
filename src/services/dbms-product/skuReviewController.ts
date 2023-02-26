@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 PUT /product/skureview */
-export async function updateAll2(body: API.SkuReviewDto[], options?: { [key: string]: any }) {
+export async function updateAll(body: API.SkuReviewDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/skureview', {
     method: 'PUT',
     headers: {
@@ -15,7 +15,7 @@ export async function updateAll2(body: API.SkuReviewDto[], options?: { [key: str
 }
 
 /** 此处后端没有提供注释 POST /product/skureview */
-export async function addAll2(body: API.SkuReviewDto[], options?: { [key: string]: any }) {
+export async function addAll(body: API.SkuReviewDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/skureview', {
     method: 'POST',
     headers: {
@@ -27,7 +27,7 @@ export async function addAll2(body: API.SkuReviewDto[], options?: { [key: string
 }
 
 /** 此处后端没有提供注释 DELETE /product/skureview */
-export async function removeAll2(body: number[], options?: { [key: string]: any }) {
+export async function removeAll(body: number[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/skureview', {
     method: 'DELETE',
     headers: {
@@ -39,7 +39,7 @@ export async function removeAll2(body: number[], options?: { [key: string]: any 
 }
 
 /** 此处后端没有提供注释 GET /product/skureview/${param0} */
-export async function get2(
+export async function get(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.get2Params,
   options?: { [key: string]: any },
@@ -53,7 +53,7 @@ export async function get2(
 }
 
 /** 此处后端没有提供注释 GET /product/skureview/page */
-export async function page2(
+export async function page(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.page2Params,
   options?: { [key: string]: any },

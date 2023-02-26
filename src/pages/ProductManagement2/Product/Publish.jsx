@@ -24,9 +24,11 @@ import TextArea from "antd/es/input/TextArea";
 import MyDataEntry from "@/components/RelationalCRUD3/MyDataEntry";
 import MySpace from "@/components/Layout/MySpace";
 import {v4 as uuidv4} from 'uuid';
+import googleCloudStorage from "@/services/third-party-service/googleCloudStorage";
 
 const categoryService = dbmsProduct.categoryController;
 const brandService = dbmsProduct.brandController;
+const productService = dbmsProduct.productController;
 
 function Publish(props) {
   const [current, setCurrent] = useState(0);
@@ -49,12 +51,14 @@ function Publish(props) {
   const [skuFormBaseData, setSkuFormBaseData] = useState([]); // depends on skuList
   /** dynamic data for sku info form */
   const [skuInfoData, setSkuInfoData] = useState([]); // depends on skuList
+
+  const [submitting, setSubmitting] = useState(false);
   const fetchCategoryForest = async () => {
     const res = await categoryService.forest({});
     setCategoryForest(res.data);
   }
   const fetchBrandList = async () => {
-    const res = await brandService.page12({[constant.PAGE_SIZE_STR]: 1000});
+    const res = await brandService.page({[constant.PAGE_SIZE_STR]: 1000});
     setBrandList(res.data.list);
   }
   useEffect(() => {
@@ -63,14 +67,15 @@ function Publish(props) {
   }, []);
 
   const onClickNextStep = async () => {
-    console.log('onClickNextStep', current)
+
     if (current === 0) {
       // basic info form finished, *category* selected will affect the following forms
       // save basic info form
       const basicInfo = await basicInfoForm.validateFields();
-      const categoryId = basicInfo.categoryId[basicInfo.categoryId.length - 1];
-      const preCategoryId = prevBasicInfoFormData.categoryId
-      if (categoryId !== preCategoryId) {
+      const categoryId = basicInfo.categoryId?.[basicInfo.categoryId.length - 1];
+      const preCategoryId = prevBasicInfoFormData.categoryId?.[basicInfo.categoryId.length - 1];
+      if (JSON.stringify(categoryId) !== JSON.stringify(preCategoryId)) {
+
         // categoryId changed, fetch attribute data based on categoryId selected in basicInfoForm
         const res = await categoryService.getAllAttrGroupWithAttrList({id: categoryId});
         const attrGroupWithAttrList = res ? res.data ? res.data : [] : [];
@@ -93,8 +98,7 @@ function Publish(props) {
         setPrevSaleAttrFormData([])
         setPrevSkuFormData([])
       }
-      basicInfoForm.setFieldValue('categoryId', categoryId);
-      setPrevBasicInfoFormData(basicInfo);
+      setPrevBasicInfoFormData({...basicInfo});
     } else if (current === 1) {
       // spec attr form finished, this form has no variable that will affect the next forms
       const specAttrs = await specAttrForm.validateFields();
@@ -169,7 +173,7 @@ function Publish(props) {
         }
         const attrIdList = Object.keys(saleAttrs);
         generateSkuList(attrIdList, 0, {});
-        console.log('newSkuList', newSkuList)
+
         setSkuList(newSkuList);
 
         const newFormSkuList = {};
@@ -183,7 +187,7 @@ function Publish(props) {
 
     } else if (current === 3) {
       // sku form finished
-      console.log("==========Complete==========")
+
       const basicInfo = prevBasicInfoFormData
       const specAttrs = prevSpecAttrFormData
       const saleAttrs = prevSaleAttrFormData
@@ -192,44 +196,125 @@ function Publish(props) {
         ...skuListFormData,
         skuList: {...skuFormBaseData, ...skuListFormData.skuList}
       }
-      console.log('basicInfo', basicInfo)
-      console.log('specAttrs', specAttrs)
-      console.log('saleAttrs', saleAttrs)
-      console.log('skuListFormData', skuListFormData);
-      console.log('skuList', skuList)
+
+
+
+
+
+      // const productImageList = (basicInfo.productImageList ?? []).map((image) => image.originFileObj);
+      // const productImageUrlList = await googleCloudStorage.addAllProductImages(productImageList, constant.BLOB);
+
+      handleSubmit({basicInfo, specAttrs, saleAttrs, ...skuList})
     }
   }
+  const handleSubmit = async ({
+    basicInfo,
+    specAttrs,
+    saleAttrs,
+    skuList,
+    skuImages,
+  }) => {
+    const productImageFileList = (basicInfo.productImageList ?? []).map((image) => image.originFileObj);
+    const productImageUrlList = await googleCloudStorage.addAllProductImages(productImageFileList, constant.BLOB);
+    const productImageIdList = (basicInfo.productImageList ?? []).map((image) => image.uid);
+
+    // to request
+    const productImageList = productImageIdList.map((id, index) => {
+      return {
+        id,
+        url: productImageUrlList[index],
+      }
+    })
+    // to request
+    const {brandId, categoryId, name, description} = basicInfo;
+
+    const skuImageFileList = (skuImages ?? []).map((image) => image.originFileObj);
+    const skuImageUrlList = await googleCloudStorage.addAllSkuImages(skuImageFileList, constant.BLOB);
+    const skuImageIdList = (skuImages ?? []).map((image) => image.uid);
+    // to request
+    const skuImageList = skuImageIdList.map((id, index) => {
+      return {
+        id,
+        url: skuImageUrlList[index],
+      }
+    })
+
+    const requestData = {
+      brandId,
+      categoryId: categoryId[categoryId.length - 1],
+      name,
+      description,
+      productImageList,
+      skuImageList,
+      specAttrs: Object.entries(specAttrs).map(([attrId, attrValue]) => {
+        return {
+          id: attrId,
+          values: attrValue ? [attrValue] : [],
+        }
+      }),
+      saleAttrs: Object.entries(saleAttrs).map(([attrId, attrValueList]) => {
+        return {
+          id: attrId,
+          values: attrValueList ?? [],
+        }
+      }),
+      skuList: Object.entries(skuList).map(([attrCombination, sku]) => {
+        const saleAttrMap = JSON.parse(attrCombination);
+        const saleAttrs = Object.entries(saleAttrMap).map(([attrId, attrValue]) => {
+          return {
+            id: attrId,
+            value: attrValue,
+          }
+        })
+        return {
+          ...sku,
+          saleAttrs,
+        }
+      })
+    }
+    console.log('requestData', requestData)
+    productService.publishAll([requestData]).then((res) => {
+
+    })
+  }
+
   const BasicInfoForm = ({form}) => {
     return (
       <div>
-        <Form form={form}
+        <Form
+          form={form}
         >
           <Form.Item
-            label={'Product Image'}
+            label={'Product MyImage'}
             noStyle={true}
           >
 
           </Form.Item>
-          {MyFormItem.Input.Text({label: "Name", name: "name"})}
-          {MyFormItem.Input.TextArea({label: "Description", name: "description"})}
+          {MyFormItem.Input.Text({
+            label: "Product Name",
+            name: "name",
+          })}
+          {MyFormItem.Input.TextArea({
+            label: "Product Description",
+            name: "description",
+          })}
 
           {MyFormItem.Select.CascadeSelect({
-            label: 'Category',
+            label: 'Product Category',
             name: 'categoryId',
             options: categoryForest,
             fieldNames: {label: 'name', value: 'id', children: 'children'},
           })}
           {MyFormItem.Select.Select({
-            label: 'Brand',
+            label: 'Product Brand',
             name: 'brandId',
             fieldNames: {label: 'name', value: 'id'},
             options: brandList,
           })}
           {MyFormItem.Upload.MultiImage({
-            label: 'Product Image',
+            label: 'Product Images',
             name: 'productImageList',
-          })
-          }
+          })}
         </Form>
       </div>
     );
@@ -275,7 +360,7 @@ function Publish(props) {
                       >Add</Button>
                       : <Input.Group compact={true}
                                      onChange={(e) => {
-                                       console.log('e', e)
+
                                        setInputValue(e.target.value)
                                      }}
                       >
@@ -316,7 +401,7 @@ function Publish(props) {
             if (!specAttrs || specAttrs.length === 0) {
               return null;
             }
-            console.log('attrGroup', attrGroup)
+
             return (
               <div key={attrGroupIndex}>
                 {attrGroupIndex > 0 && <Divider/>}
@@ -325,68 +410,67 @@ function Publish(props) {
                   attrGroup.specAttrs.map((attr, specAttrIndex) => {
                     const {id, name, values, _customValue} = attr
                     return (
-                      <Space
-                        style={{
-                          alignItems: 'unset',
-                          display: 'flex',
-                        }}
+                      <Row
+                        gutter={16}
                         key={specAttrIndex}
                       >
-                        <Form.Item label={name} name={id}>
-                          {!_customValue
-                            ? MyDataEntry.Select.Select({
-                              options: values.map(v => {
-                                return {value: v, label: v}
+                        <Col span={12}>
+                          <Form.Item label={name} name={id}>
+                            {!_customValue
+                              ? MyDataEntry.Select.Select({
+                                options: values.map(v => {
+                                  return {value: v, label: v}
+                                })
                               })
-                            })
-                            : MyDataEntry.Input.AutoSizeText({})
-                          }
-                        </Form.Item>
+                              : MyDataEntry.Input.AutoSizeText({})
+                            }
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item>
+                            <Checkbox
+                              checked={_customValue}
+                              onChange={(e) => {
 
-                        <Form.Item>
-                          <Checkbox
-                            checked={_customValue}
-                            onChange={(e) => {
-                              console.log('e', e)
-                              const newAttrGroupWithAttrList =
-                                attrGroupWithAttrList.map((attrGroup, i) => {
-                                  if (attrGroupIndex === i) {
-                                    return {
-                                      ...attrGroup,
-                                      specAttrs: attrGroup.specAttrs.map((attr, j) => {
-                                        if (specAttrIndex === j) {
-                                          return {...attr, _customValue: e.target.checked}
-                                        }
-                                        return attr;
-                                      })
+                                const newAttrGroupWithAttrList =
+                                  attrGroupWithAttrList.map((attrGroup, i) => {
+                                    if (attrGroupIndex === i) {
+                                      return {
+                                        ...attrGroup,
+                                        specAttrs: attrGroup.specAttrs.map((attr, j) => {
+                                          if (specAttrIndex === j) {
+                                            return {...attr, _customValue: e.target.checked}
+                                          }
+                                          return attr;
+                                        })
+                                      }
                                     }
-                                  }
-                                  return attrGroup;
-                                })
-                              console.log('newAttrGroupWithAttrList', newAttrGroupWithAttrList)
-                              setAttrGroupWithAttrList(
-                                attrGroupWithAttrList.map((attrGroup, i) => {
-                                  if (attrGroupIndex === i) {
-                                    return {
-                                      ...attrGroup,
-                                      specAttrs: attrGroup.specAttrs.map((attr, j) => {
-                                        if (specAttrIndex === j) {
-                                          return {...attr, _customValue: e.target.checked}
-                                        }
-                                        return attr;
-                                      })
-                                    }
-                                  }
-                                  return attrGroup;
-                                })
-                              )
-                            }}
-                          >
-                            Custom Value
-                          </Checkbox>
-                        </Form.Item>
+                                    return attrGroup;
+                                  })
 
-                      </Space>
+                                setAttrGroupWithAttrList(
+                                  attrGroupWithAttrList.map((attrGroup, i) => {
+                                    if (attrGroupIndex === i) {
+                                      return {
+                                        ...attrGroup,
+                                        specAttrs: attrGroup.specAttrs.map((attr, j) => {
+                                          if (specAttrIndex === j) {
+                                            return {...attr, _customValue: e.target.checked}
+                                          }
+                                          return attr;
+                                        })
+                                      }
+                                    }
+                                    return attrGroup;
+                                  })
+                                )
+                              }}
+                            >
+                              Custom Value
+                            </Checkbox>
+                          </Form.Item>
+                        </Col>
+                      </Row>
                     )
                   })
                 }
@@ -406,7 +490,7 @@ function Publish(props) {
     }
     // TODO: 如果saleAttrs是空的，只显示一个（目前报错）
     const columns = [
-      ...Object.keys(skuList[0].attrs).map((attrId, index) => {
+      ...Object.keys(skuList[0]?.attrs ?? []).map((attrId, index) => {
         return {
           title: attrIdToName[attrId],
           dataIndex: ['attrs', attrId],
@@ -466,7 +550,7 @@ function Publish(props) {
                   }
                   expandable={{
                     expandedRowRender: (record) => {
-                      console.log('record', record)
+
                       return (
                         <Form.Item noStyle={true}>
                           <Row gutter={10}>
@@ -516,7 +600,7 @@ function Publish(props) {
                             </Col>
                             <Col span={8}>
                               <Form.Item
-                                name={['skuList', record._attrCombination, 'gift card bonus']}
+                                name={['skuList', record._attrCombination, 'giftCardBonus']}
                                 label="Gift Card Bonus $"
                                 // rules={[{required: true, message: 'Please input gift card bonus'}]}
                               >
@@ -528,12 +612,13 @@ function Publish(props) {
                             </Col>
                             <Col span={8}>
                               <Form.Item
-                                name={['skuList', record._attrCombination, 'prime discount']}
+                                name={['skuList', record._attrCombination, 'primeDiscount']}
                                 label='Prime Discount %'
                                 // rules={[{required: true, message: 'Please input prime discount'}]}
                               >
                                 <InputNumber
                                   min={0}
+                                  max={100}
                                   precision={0}
                                 />
                               </Form.Item>
@@ -550,11 +635,11 @@ function Publish(props) {
                             />
                           </Form.Item>
                           <Form.Item
-                            name={['skuList', record._attrCombination, 'images']}
+                            name={['skuList', record._attrCombination, 'imageIdList']}
                             label="Images"
                             // rules={[{required: true, message: 'Please input images'}]}
                             shouldUpdate={(prevValues, currentValues) => {
-                              // console.log('shouldUpdate', prevValues, currentValues, JSON.stringify(prevValues) !== JSON.stringify(currentValues))
+
                               setTimeout(() => { // NOTE 必须设置延迟， 图片上传有多个阶段， 每次form的值都会变化， 不设置延迟可能导致image显示不更新
                                 setImageFileList(currentValues.skuImages);
                               }, 1000)
@@ -563,7 +648,7 @@ function Publish(props) {
                             <Checkbox.Group>
                               {
                                 form.getFieldValue('skuImages')?.map((uploaderData, index) => {
-                                  // console.log('uploaderData', uploaderData)
+
                                   return (
                                     <Checkbox
                                       value={uploaderData.uid} key={index}

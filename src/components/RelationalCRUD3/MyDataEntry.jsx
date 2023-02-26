@@ -61,7 +61,7 @@ const Select = ({
     options={options}
     fieldNames={fieldNames}
     style={{
-      width: '200px',
+      // width: '200px',
       ...style,
     }}
   >
@@ -95,18 +95,18 @@ const MultiImage = ({
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
   const handleChange = ({ fileList: newFileList }) => {
-    console.log('handleChange', newFileList)
+
     setFileList(newFileList);
   }
   const customRequest = ({ file, onSuccess }) => {
-    console.log('customRequest', file)
+
     setTimeout(() => {
       onSuccess("ok");
     }, 0);
   }
   const beforeUpload = (file) => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    console.log('beforeUpload', file)
+
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!');
     }

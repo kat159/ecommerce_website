@@ -3,8 +3,11 @@ export default {
   'menu.pms.category': 'Category & Attribute',
   'menu.pms.brand': 'Brand & Category',
   'menu.pms.product': 'Product',
-  'menu.pms.product.manage': 'Manage',
-  'menu.pms.product.publish': 'Publish',
+  'menu.pms.product.manage': 'Manage Product',
+  'menu.pms.product.productManage': 'Product Manage',
+  'menu.pms.product.skuManage': 'Sku Manage',
+
+  'menu.pms.product.publish': 'Add New Product',
   'menu.pms.test': 'Test',
   'menu.pms.test2': 'Test2',
   'menu.pms.demo': 'DEMO',

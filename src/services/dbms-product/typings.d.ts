@@ -16,6 +16,11 @@ declare namespace API {
     cid: number;
   };
 
+  type AttrFilter = {
+    id?: number;
+    values?: string[];
+  };
+
   type AttributeDto = {
     id?: number;
     attributeGroupId?: number;
@@ -53,6 +58,7 @@ declare namespace API {
     pageSize?: number;
     orderFields?: string[];
     orderTypes?: string[];
+    include?: string[];
     name?: string;
   };
 
@@ -79,6 +85,7 @@ declare namespace API {
     pageSize?: number;
     orderFields?: string[];
     orderTypes?: string[];
+    include?: string[];
     level?: number;
     name?: string;
   };
@@ -170,8 +177,13 @@ declare namespace API {
   };
 
   type Image = {
-    uid?: string;
+    id?: string;
     url?: string;
+  };
+
+  type MultiValueAttribute = {
+    id?: number;
+    values?: string[];
   };
 
   type page10Params = {
@@ -227,7 +239,7 @@ declare namespace API {
   };
 
   type page9Params = {
-    params: PaginationDto;
+    params: ProductPaginationDto;
   };
 
   type pageAttrGroupParams = {
@@ -244,6 +256,7 @@ declare namespace API {
     pageSize?: number;
     orderFields?: string[];
     orderTypes?: string[];
+    include?: string[];
   };
 
   type ProductAttrbuteValueDto = {
@@ -254,11 +267,6 @@ declare namespace API {
     attributeValue?: string;
     attributeSort?: number;
     display?: number;
-  };
-
-  type ProductAttribute = {
-    id?: number;
-    values?: string[];
   };
 
   type ProductDescriptionDto = {
@@ -286,16 +294,50 @@ declare namespace API {
     isDefault?: number;
   };
 
+  type ProductManageDto = {
+    id: number;
+    productToUpdate?: ProductDto;
+    productImageIdsToDelete?: number[];
+    productImagesToAdd?: ProductImageDto[];
+    productAttrValuesToUpdate?: ProductAttrbuteValueDto[];
+    skuImageIdsToDelete?: number[];
+    skuImagesToAdd?: SkuImageDto[];
+    skus?: SkuDto[];
+  };
+
+  type ProductPaginationDto = {
+    current?: number;
+    pageSize?: number;
+    orderFields?: string[];
+    orderTypes?: string[];
+    include?: string[];
+  };
+
   type ProductPublishDto = {
     brandId?: number;
     categoryId?: number;
     name?: string;
     description?: string;
     productImageList?: Image[];
-    saleAttrs?: ProductAttribute[];
-    specAttrs?: ProductAttribute[];
+    saleAttrs?: MultiValueAttribute[];
+    specAttrs?: MultiValueAttribute[];
     skuImageList?: Image[];
     skuList?: Sku[];
+  };
+
+  type ProductSearchParams = {
+    current?: number;
+    pageSize?: number;
+    orderFields?: string[];
+    orderTypes?: string[];
+    include?: string[];
+    keyword?: string;
+    categoryId?: number;
+    brandIds?: number[];
+    specAttrFilters?: AttrFilter[];
+    saleAttrFilters?: AttrFilter[];
+    minPrice?: number;
+    maxPrice?: number;
   };
 
   type Result = {
@@ -305,21 +347,21 @@ declare namespace API {
     data?: Record<string, any>;
   };
 
-  type SaleAttr = {
+  type SingleValueAttribute = {
     id?: number;
     value?: string;
   };
 
   type Sku = {
-    saleAttrs?: SaleAttr[];
     name?: string;
     description?: string;
     title?: string;
     subtitle?: string;
-    imageIdList?: string[];
-    price?: string;
+    price?: number;
     giftCardBonus?: string;
     primeDiscount?: string;
+    saleAttrs?: SingleValueAttribute[];
+    imageIdList?: string[];
   };
 
   type SkuAttributeValueDto = {
@@ -341,6 +383,8 @@ declare namespace API {
     subtitle?: string;
     price?: number;
     saleCount?: number;
+    primeDiscount?: number;
+    giftCardBonus?: number;
   };
 
   type SkuImageDto = {
@@ -348,6 +392,7 @@ declare namespace API {
     img?: string;
     sort?: number;
     isDefault?: number;
+    uid?: string;
   };
 
   type SkuReviewDto = {

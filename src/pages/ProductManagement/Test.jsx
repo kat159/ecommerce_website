@@ -23,12 +23,12 @@ export default function Test() {
      *      2. 每个dataList中的元素都是一个node/record，每个node/record边上都有insert/edit/delete按钮，
      *          当点击insert/edit，就获取点击的node/record的id，然后通过service.fetch(id)获取该node/record的详细信息，
      *          然后弹出form，form中的字段都是editableFields，点击save后，通过service.update(id, data)更新该node/record，
-     *      3. 此时如果form的editableFields中有relationalField，**就再创建一个MyRelationCRUD**，（通常是tag-group）， 
+     *      3. 此时如果form的editableFields中有relationalField，**就再创建一个MyRelationCRUD**，（通常是tag-group），
      *          传入primaryId到MyRelationCRUD，MyRelationCRUD就会通过service.fetch(primaryId)获取dataList，
      *          **然后跳回到step1，直到没有relationalField为止**，
-        
+
             TODO: 上面解决了ONE_TO_MANY， many_to_many怎么办？
-    *                
+    *
     */
     const catogoryService = productService.categoryController;
     const attrGroupService = productService.attributeGroupController;
@@ -38,7 +38,7 @@ export default function Test() {
         type: constant.TREE,  // table / tag-group / ...
         entityName: 'Category',
         // props for specific type(tree)
-        titleFieldName: 'name', // the response data field name that will be displayed as the title of the node  
+        titleFieldName: 'name', // the response data field name that will be displayed as the title of the node
         childrenFieldName: 'children',      // the response data(database) field name that will be displayed as the children of the node
         idFieldName: 'id',   // the reponse data field name that will be displayed as the id of the node
         parantIdFieldName: 'parentId',  // the reponse data(database) field name that will be displayed as the parentId of the node
@@ -46,11 +46,11 @@ export default function Test() {
         sortOrderFieldName: 'sort',
         maxLevel: 3,
         service: { // the service interface that provides the CRUD operations
-            get: catogoryService.get10,
+            get: catogoryService.get,
             getAll: catogoryService.getAll,
-            addAll: catogoryService.addAll10,
-            updateAll: catogoryService.updateAll10,
-            removeAll: catogoryService.removeAll10,
+            addAll: catogoryService.addAll,
+            updateAll: catogoryService.updateAll,
+            removeAll: catogoryService.removeAll,
         },
         // insertIconRender: (props) => <PlusOutlined {...props} />,       // Optional, the icon for insert
         // editIconRender: (props) => <EditOutlined {...props} />,         // Optional, the icon for edit
@@ -89,19 +89,19 @@ export default function Test() {
                     // type: constant.LIST,
                     entityName: 'Attribute Groups',
                     relationship: constant.ONE_TO_MANY,
-            
+
                     titleFieldName: 'name',
                     sortOrderFieldName: 'sort',
-            
+
                     fakeSubmit: true,
                     service: {
-                        get: attrGroupService.get12,
+                        get: attrGroupService.get,
                         getAll: catogoryService.getAllAttrGroup,
                         addAll: catogoryService.addAllAttrGroup,
-                        updateAll: attrGroupService.updateAll12,
-                        removeAll: attrGroupService.removeAll12,
+                        updateAll: attrGroupService.updateAll,
+                        removeAll: attrGroupService.removeAll,
                     },
-            
+
                     formType: constant.POP_FORM,
                     editableFields: [
                         {
@@ -127,7 +127,7 @@ export default function Test() {
                         //     label: 'Attribute Groups',
                         //     shouldDisplay: (record) => record.level === 3,
                         //     isRelationalData: true,
-            
+
                         // }
                     ],
                 },
@@ -145,11 +145,11 @@ export default function Test() {
 
         fakeSubmit: true,
         service: {
-            get: attrService.get13,
+            get: attrService.get,
             getAll: attrGroupService.getAllAttribute,
             addAll: attrGroupService.addAllAttribute,
-            updateAll: attrService.updateAll13,
-            removeAll: attrService.removeAll13,
+            updateAll: attrService.updateAll,
+            removeAll: attrService.removeAll,
         },
 
         formType: constant.POP_FORM,
@@ -198,11 +198,11 @@ export default function Test() {
         sortOrderFieldName: 'sort',
 
         service: {
-            get: attrGroupService.get12,
+            get: attrGroupService.get,
             getAll: catogoryService.getAllAttrGroup,
             addAll: catogoryService.addAllAttrGroup,
-            updateAll: attrGroupService.updateAll12,
-            removeAll: attrGroupService.removeAll12,
+            updateAll: attrGroupService.updateAll,
+            removeAll: attrGroupService.removeAll,
         },
 
         formType: constant.POP_FORM,
@@ -220,7 +220,7 @@ export default function Test() {
             {
                 label: 'Attribute Groups',
                 isRelationalData: true,
-                
+
                 displayerProps: attibuteDisplayerProps,
             }
         ],
@@ -229,7 +229,7 @@ export default function Test() {
         type: constant.TREE,  // table / tag-group / ...
         entityName: 'Category',
         // props for specific type(tree)
-        titleFieldName: 'name', // the response data field name that will be displayed as the title of the node  
+        titleFieldName: 'name', // the response data field name that will be displayed as the title of the node
         childrenFieldName: 'children',      // the response data(database) field name that will be displayed as the children of the node
         idFieldName: 'id',   // the reponse data field name that will be displayed as the id of the node
         parantIdFieldName: 'parentId',  // the reponse data(database) field name that will be displayed as the parentId of the node
@@ -238,16 +238,16 @@ export default function Test() {
         maxLevel: 3,
 
         service: { // the service interface that provides the CRUD operations
-            get: catogoryService.get10,
+            get: catogoryService.get,
             getAll: catogoryService.getAll,
-            addAll: catogoryService.addAll10,
-            updateAll: catogoryService.updateAll10,
-            removeAll: catogoryService.removeAll10,
+            addAll: catogoryService.addAll,
+            updateAll: catogoryService.updateAll,
+            removeAll: catogoryService.removeAll,
         },
         // insertIconRender: (props) => <PlusOutlined {...props} />,       // Optional, the icon for insert
         // editIconRender: (props) => <EditOutlined {...props} />,         // Optional, the icon for edit
         // deleteIconRender: (props) => <DeleteOutlined {...props} />,       // Optional, the icon for delete
-        fakeSubmit: false, // submit change directly to server 
+        fakeSubmit: false, // submit change directly to server
 
         // formProps: {
         //     type: constant.POP_FORM,
@@ -279,7 +279,7 @@ export default function Test() {
             }
         ],
     }
-    
+
     return (
         RelationalCRUDEntry(categoryDisplayerProps)
     )

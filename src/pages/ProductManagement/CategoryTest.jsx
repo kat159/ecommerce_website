@@ -18,7 +18,7 @@ const _catogoryService = productService.categoryController;
 const _attrGroupService = productService.attributeGroupController;
 
 const categoryService = {
-    get: _catogoryService.get10,
+    get: _catogoryService.get,
     delete: _catogoryService.delete10,
     listAttrGroup: _catogoryService.listAttrGroup,
     addAttrGroup: _catogoryService.addAttrGroup,
@@ -28,7 +28,7 @@ const categoryService = {
 }
 
 const attrGroupService = {
-    get: _attrGroupService.get12,
+    get: _attrGroupService.get,
     delete: _attrGroupService.delete12,
     update: _attrGroupService.update12,
 }
@@ -190,7 +190,7 @@ export default function () {
                     <Form.Item
                         label="Attribute Groups"
                     >
-                        
+
                     </Form.Item>
                 </PopForm>
             }

@@ -8,12 +8,12 @@ import constant from '../../utils/constant';
 // have to override customRequest, or it will send loading request to server(action url in Upload), and action is required
 /**  antd Upload component flow:
  *   1. beforeUpload(file) --> return true/false, if true, go to next step
-     2. onChange(info) --> **注意 info.file是Object不是File类型， 
-            最好的方法是**在beforeUpload自定义**自己对file的处理， 
+     2. onChange(info) --> **注意 info.file是Object不是File类型，
+            最好的方法是**在beforeUpload自定义**自己对file的处理，
             onChange和curtomRequest什么都不做
  *   3. customRequest()
  *   4. onChange(info) **called two times if customRequest execute onSucces()**
- *      --> listen to info.file.status, which will be updated by 
+ *      --> listen to info.file.status, which will be updated by
  *          callback 'onSuccess('ok')' in customedRequest()
 */
 
@@ -25,7 +25,7 @@ const getBase64 = (img, callback) => {
 };
 
 export function ImageUploader({
-    form, 
+    form,
     name,
     ...props
 }) {
@@ -40,7 +40,7 @@ export function ImageUploader({
         }
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
-            message.error('Image must smaller than 2MB!');
+            message.error('MyImage must smaller than 2MB!');
         }
         setLoading(true);
         getBase64(file, (url) => {

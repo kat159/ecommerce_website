@@ -1,0 +1,200 @@
+//.category-side-filter-collapse > .ant-collapse-item > .ant-collapse-header {
+//  padding-bottom: 0;
+//  padding-top: 0;
+//}
+.category-side-filter .ant-menu-item:hover {
+  background: none !important;
+  cursor: auto;
+}
+
+.my-image-card {
+  .ant-card-cover {
+    padding: 10px 10px 0;
+  }
+  .ant-card-body {
+    padding: 10px;
+    text-align: center;
+  }
+  .ant-card-meta-detail > div:not(:last-child) {
+    margin-bottom: 0;
+  }
+}
+.card-grid-no-empty-border {
+  border: none !important;
+}
+.product-page {
+  margin-left: 10px;
+  margin-right: 20px;
+  .product-page-detail {
+    .ant-tabs-nav {
+      margin-bottom: 0;
+      .ant-tabs-tab {
+        border-bottom: none;
+      }
+    }
+    .ant-tabs-nav::before {
+      border-bottom: none;
+    }
+    .ant-tabs-content-holder {
+      padding: 0 20px 20px;
+      margin-bottom: 0;
+      border: 1px solid #e8e8e8;
+      .description-list {
+        .ant-descriptions-view {
+          border-radius: 0;
+          border-left: none;
+          border-right: none;
+        }
+        .ant-descriptions-header {
+          margin-top: 10px;
+          margin-left: 10px;
+          margin-bottom: 10px;
+        }
+        .ant-descriptions-item-label {
+          width: 150px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .product-page {
+    margin-left: 10px;
+    .product-page-detail {
+      .description-list {
+        .ant-descriptions-item-label {
+          width: 150px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .product-page {
+    margin-left: 10px;
+
+    .product-page-detail {
+      .description-list {
+        .ant-descriptions-item-label {
+          width: 175px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .product-page {
+    margin-left: 50px;
+
+    .product-page-detail {
+      .description-list {
+        .ant-descriptions-item-label {
+          width: 200px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .product-page {
+    margin-left: 50px;
+
+    .product-page-detail {
+      .description-list {
+        .ant-descriptions-item-label {
+          width: 225px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .product-page {
+    margin-left: 100px;
+
+    .product-page-detail {
+      .description-list {
+        .ant-descriptions-item-label {
+          width: 250px;
+        }
+      }
+    }
+  }
+}
+
+.third-level-category-product-list {
+  flex-flow: nowrap;
+
+  .ant-card-meta-title {
+    white-space: pre-line;
+    //white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3em;
+  }
+
+  .ant-card-meta-description {
+    white-space: pre-line;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ant-card-meta-detail > div:not(:last-child) {
+    margin-bottom: 0;
+  }
+}
+
+.third-level-category-product-list {
+  .saved-amount {
+    margin-left: 10px;
+    font-size: 20px;
+    color: #999;
+  }
+
+  .discounted-price {
+    font-weight: bold;
+    font-size: 20px;
+    color: #000000;
+  }
+
+  .original-price {
+    text-decoration: line-through;
+    font-size: 14px;
+    color: #999;
+  }
+
+  .prime-discount {
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    color: #0066cc;
+  }
+
+  .discount-label {
+    margin-right: 10px;
+  }
+
+  .discount-value {
+    font-weight: bold;
+  }
+
+  .gift-bonus {
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    color: #009900;
+  }
+
+  .bonus-label {
+    margin-right: 10px;
+  }
+
+  .bonus-value {
+    font-weight: bold;
+  }
+}

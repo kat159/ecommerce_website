@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 PUT /product/attributegroup */
-export async function updateAll13(body: API.AttributeGroupDto[], options?: { [key: string]: any }) {
+export async function updateAll(body: API.AttributeGroupDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/attributegroup', {
     method: 'PUT',
     headers: {
@@ -15,7 +15,7 @@ export async function updateAll13(body: API.AttributeGroupDto[], options?: { [ke
 }
 
 /** 此处后端没有提供注释 POST /product/attributegroup */
-export async function addAll13(body: API.AttributeGroupDto[], options?: { [key: string]: any }) {
+export async function addAll(body: API.AttributeGroupDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/attributegroup', {
     method: 'POST',
     headers: {
@@ -27,7 +27,7 @@ export async function addAll13(body: API.AttributeGroupDto[], options?: { [key: 
 }
 
 /** 此处后端没有提供注释 DELETE /product/attributegroup */
-export async function removeAll13(body: number[], options?: { [key: string]: any }) {
+export async function removeAll(body: number[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/attributegroup', {
     method: 'DELETE',
     headers: {
@@ -39,7 +39,7 @@ export async function removeAll13(body: number[], options?: { [key: string]: any
 }
 
 /** 此处后端没有提供注释 GET /product/attributegroup/${param0} */
-export async function get13(
+export async function get(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.get13Params,
   options?: { [key: string]: any },
@@ -90,7 +90,7 @@ export async function addAllAttribute(
 }
 
 /** 此处后端没有提供注释 GET /product/attributegroup/page */
-export async function page13(
+export async function page(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.page13Params,
   options?: { [key: string]: any },

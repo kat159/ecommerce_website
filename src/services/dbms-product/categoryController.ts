@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 PUT /product/category */
-export async function updateAll11(body: API.CategoryDto[], options?: { [key: string]: any }) {
+export async function updateAll(body: API.CategoryDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/category', {
     method: 'PUT',
     headers: {
@@ -15,7 +15,7 @@ export async function updateAll11(body: API.CategoryDto[], options?: { [key: str
 }
 
 /** 此处后端没有提供注释 POST /product/category */
-export async function addAll11(body: API.CategoryDto[], options?: { [key: string]: any }) {
+export async function addAll(body: API.CategoryDto[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/category', {
     method: 'POST',
     headers: {
@@ -27,7 +27,7 @@ export async function addAll11(body: API.CategoryDto[], options?: { [key: string
 }
 
 /** 此处后端没有提供注释 DELETE /product/category */
-export async function removeAll11(body: number[], options?: { [key: string]: any }) {
+export async function removeAll(body: number[], options?: { [key: string]: any }) {
   return request<API.Result>('/product/category', {
     method: 'DELETE',
     headers: {
@@ -39,7 +39,7 @@ export async function removeAll11(body: number[], options?: { [key: string]: any
 }
 
 /** 此处后端没有提供注释 GET /product/category/${param0} */
-export async function get11(
+export async function get(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.get11Params,
   options?: { [key: string]: any },
@@ -147,7 +147,7 @@ export async function forest(options?: { [key: string]: any }) {
 }
 
 /** 此处后端没有提供注释 GET /product/category/page */
-export async function page11(
+export async function page(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.page11Params,
   options?: { [key: string]: any },

@@ -1,5 +1,6 @@
 export default {
   // Actions
+  IDLE: 'idle',
   EDIT: 'edit',
   INSERT: 'insert',
   DELETE: 'delete',
@@ -17,6 +18,9 @@ export default {
   TOTAL_STR: 'total',
   LIST_STR: 'list',
   DEFAULT_PAGE_SIZE: 10,
+  INCLUDE: 'include',
+  SORT_FIELD_LIST: 'orderFields',
+  SORT_ORDER_LIST: 'orderTypes',
 
   // Data Displayer Components Types
   TABLE: 'table',
@@ -65,7 +69,7 @@ export default {
   DATETIME_RANGE: 'datetimeRange',
   TIMESTAMP_RANGE: 'timestampRange',
 
-  // Image File Type
+  // MyImage File Type
   BLOB: 'blob',
   BASE64: 'base64',
 }
