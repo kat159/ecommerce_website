@@ -27,7 +27,7 @@ interface ResponseStructure {
 export const errorConfig: RequestConfig = {
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
-    
+
     // 错误抛出
     errorThrower: (res) => {
       const { success, data, errorCode, errorMessage, showType } =
@@ -41,6 +41,14 @@ export const errorConfig: RequestConfig = {
     },
     // 错误接收及处理
     errorHandler: (error: any, opts: any) => {
+      console.log('errorHandler', error, opts);
+      const res = error?.response?.data;
+      console.log('res', res);
+      console.log('msg', res?.data)
+      if (res?.data?.localizedMessage) {
+        message.warning(res.data.localizedMessage);
+        return
+      }
       if (opts?.skipErrorHandler) throw error;
       // 我们的 errorThrower 抛出的错误。
       if (error.name === 'BizError') {

@@ -6,6 +6,8 @@ export default {
   'menu.pms.product.manage': 'Manage Product',
   'menu.pms.product.productManage': 'Product Manage',
   'menu.pms.product.skuManage': 'Sku Manage',
+  'menu.pms.order': 'Order',
+  'menu.pms.purchase': 'Purchase',
 
   'menu.pms.product.publish': 'Add New Product',
   'menu.pms.test': 'Test',

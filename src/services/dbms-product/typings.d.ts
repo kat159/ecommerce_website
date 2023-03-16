@@ -257,6 +257,7 @@ declare namespace API {
     orderFields?: string[];
     orderTypes?: string[];
     include?: string[];
+    ids?: number[];
   };
 
   type ProductAttrbuteValueDto = {

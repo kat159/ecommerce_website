@@ -72,4 +72,7 @@ export default {
   // MyImage File Type
   BLOB: 'blob',
   BASE64: 'base64',
+
+  MAX_CART_ITEM_COUNT: 100,
+  MAX_BROWSE_HISTORY_ITEM_COUNT: 1000,
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import React, {useEffect, useMemo} from 'react';
 import dbmsProduct from "@/services/dbms-product";
 import {useModel, history} from "umi";
@@ -8,6 +9,7 @@ import {v4 as uuid} from "uuid";
 import constant from "@/utils/constant";
 import {Prime} from "@/components/icons/Icon";
 import MyImage from "@/components/DataDisplay/MyImage";
+import dbmsMember from "@/services/dbms-member";
 
 const {Meta} = Card;
 
@@ -31,6 +33,7 @@ function ThirdLevelCategory({
   useEffect(() => {
     fetchAttrGroups(categoryIds[2]);
   }, [])
+  const {userInfo} = useModel('ecommerceFront');
   const minPriceRef = React.useRef(null)
   const maxPriceRef = React.useRef(null)
   const [saleAttrFilters, setSaleAttrFilters] = React.useState({})
@@ -39,8 +42,8 @@ function ThirdLevelCategory({
   const [confirmPriceRange, setConfirmPriceRange] = React.useState([null, null])
   const sortOptions = [
     {label: 'Featured', value: 0},
-    {label: 'Price: Low to High', value: 1, sortField: 'price', sortOrder: 'asc'},
-    {label: 'Price: High to Low', value: 2, sortField: 'price', sortOrder: 'desc'},
+    {label: 'Price: Low to High', value: 1, sortField: 'final_price', sortOrder: 'asc'},
+    {label: 'Price: High to Low', value: 2, sortField: 'final_price', sortOrder: 'desc'},
     // {label: 'Best Selling', value: 3, sortField: 'sales', sortOrder: 'desc'},
     // {label: 'Best Rating', value: 4, sortField: 'rating', sortOrder: 'desc'},
     // {label: 'Most Reviews', value: 5, sortField: 'reviews', sortOrder: 'desc'},
@@ -196,6 +199,10 @@ function ThirdLevelCategory({
 
   const onSkuClick = (sku) => {
     console.log('click sku', sku)
+    dbmsMember.memberController.addToBrowseHistory(
+      {username: userInfo.username},
+      [{skuId: sku.id}],
+    )
     history.push(`${window.location.pathname}${window.location.search}&sku=${sku.id}`)
   }
 
@@ -302,9 +309,9 @@ function ThirdLevelCategory({
               <Col
                 key={index}
                 // flex={'1 0 300px'}
-                xs={{span: 24}}
+                xs={{span: 12}}
                 sm={{span: 12}}
-                md={{span: 12}}
+                md={{span: 8}}
                 lg={{span: 8}}
                 xl={{span: 6}}
                 xxl={{span: 6}}
@@ -330,23 +337,27 @@ function ThirdLevelCategory({
                     // title={'asdfasdfasdfsfsd sadfasasdasdasdasdasddf asdasdasd asdasd'}
                     // description={'asdfasdfasdfsfsd sadfasasdasdasdasdasddf asdasdasd asdasd'}
                     description={
-                      primeDiscount && primeDiscount > 0
-                        ? <div className="price">
-                          <span className="original-price">${price}</span>
-                          <span className="discounted-price">
+                      <div className="price">
+                        {
+                          primeDiscount && primeDiscount > 0
+                            ? <>
+                              <span className="original-price">${price}</span>
+                              <span className="discounted-price">
                             ${curPrice}
                           </span>
-                          <div className="gift-bonus">
-                            <span className="bonus-label"><GiftOutlined/>Gift Card Bonus:</span>
-                            <span className="bonus-value">${giftCardBonus}</span>
-                          </div>
-                          {/*<span className="saved-amount">Save 20%</span>*/}
-                        </div>
-                        : <div className="price">
-                          <span className="discounted-price">${price}</span>
-                        </div>
+                            </>
+                            : <span className="discounted-price">${price}</span>
+                        }
+                        {
+                          // giftCardBonus && <div className="gift-bonus">
+                          //   <span className="bonus-label"><GiftOutlined/>Gift Card Bonus:</span>
+                          //   <span className="bonus-value">${giftCardBonus}</span>
+                          // </div>
+                        }
+                      </div>
                     }
                     // 这里description过长会导致span失效，内容超出屏幕需要横向scroll，不知道为什么
+                    //
                     // description="1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
                   />
                 </Card>
@@ -376,7 +387,7 @@ function ThirdLevelCategory({
     >
       <Layout.Sider
         className={'.my-menu-sider'}
-        width={'250px'}
+        width={'220px'}
         breakpoint="lg"
         collapsedWidth="0"
         onBreakpoint={(broken) => {
@@ -413,7 +424,7 @@ function ThirdLevelCategory({
       <Col id={'right-content'}
            flex={'auto'}
            style={{
-             maxWidth: screen.width * 0.8
+             maxWidth: screen.width * 0.7
            }}
       >
         {HeadFilter}

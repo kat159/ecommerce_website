@@ -1,9 +1,9 @@
 import React from 'react';
 import {history, useModel} from "@/.umi/exports";
-import {Card, Col, Divider, Layout, Menu, Row, Typography} from "antd";
+import {Card, Carousel, Col, Divider, Layout, Menu, Row, Typography} from "antd";
 import MyImage from "@/components/DataDisplay/MyImage";
 import {GiftOutlined} from "@ant-design/icons";
-
+import Slider from "react-slick";
 function NoCategory() {
   const {categoryIdMap, categoryForest} = useModel('ECommerceFront.category');
   const childCategories = categoryForest;
@@ -102,6 +102,55 @@ function NoCategory() {
       {ByRow}
     </div>
   }
+  const CarouselAds = () => {
+    const ads = [
+      {
+        title: 'AAphone',
+        img: 'https://firebasestorage.googleapis.com/v0/b/ecommerce-6ee5d.appspot.com/o/home-ad%2Fpexels-negative-space-48605_11zon.jpg?alt=media&token=3bd6e6e2-62e2-4609-969f-03e55289ab30',
+        url: 'http://localhost:8000/ecommerce/front/category?category=1,2,3&sku=178',
+      },
+      {
+        title: 'Up to 50% off',
+        img: 'https://firebasestorage.googleapis.com/v0/b/ecommerce-6ee5d.appspot.com/o/home-ad%2Fpexels-neosiam-594452.jpg?alt=media&token=cb5a87b8-2253-4632-b324-bc051fd1c478',
+        url: 'http://localhost:8000/ecommerce/front/category?category=1,2,3&sku=195',
+      }
+
+    ]
+    const contentStyle = {
+      height: '160px',
+      color: '#fff',
+      lineHeight: '160px',
+      textAlign: 'center',
+      background: '#364d79',
+    };
+    return (
+      <Carousel autoplay>
+        {
+          ads.map((ad, index) => {
+            return <a
+              key={index}
+              onClick={e => {
+                e.stopPropagation()
+                history.push(ad.url)
+              }}
+              style={{
+                position: 'relative',
+                textAlign: 'center',
+              }}
+            >
+              <img src={ad.img}
+                   key={index}
+                   style={{
+                      width: '100%',
+                   }}
+              />
+            </a>
+
+          })
+        }
+      </Carousel>
+    );
+  }
   const CategoryNavBar = () => {
     const getItems = (categoryForest) => {
       return categoryForest.map((category) => {
@@ -130,7 +179,7 @@ function NoCategory() {
         <Layout.Sider
           className={'.my-menu-sider'}
           theme={'light'}
-          width={'250px'}
+          width={'220px'}
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
@@ -139,12 +188,16 @@ function NoCategory() {
           onCollapse={(collapsed, type) => {
             console.log(collapsed, type);
           }}
+          style={{
+            background: 'transparent',
+            fontWeight: 'bold',
+          }}
         >
           <Menu
             style={{
               // width: 'fit-content',
               height: '100%',
-              // background: 'none',
+              background: 'transparent'
             }}
             // mode="vertical"
             items={items}
@@ -174,9 +227,16 @@ function NoCategory() {
       </Col>
       <Col
         flex={'auto'}
+        style={{
+          maxWidth: 'calc(100% - 350px)',
+        }}
       >
-        <Typography.Title level={3}>Advertisement Carousel</Typography.Title>
+        <CarouselAds/>
+
         <ShopCategory/>
+        <Typography.Title level={3}>Featured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured
+          ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured
+          ItemsFeatured ItemsFeatured Items</Typography.Title>
         <Typography.Title level={3}>Featured Items</Typography.Title>
       </Col>
     </Row>

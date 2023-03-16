@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import React from 'react';
 import {history, useModel} from "@/.umi/exports";
 import {Card, Col, Divider, Layout, Menu, Row, Typography} from "antd";
@@ -87,7 +88,8 @@ function FirstLevelCategory({
           label: (
             <span
             >
-              <Typography.Text>
+              <Typography.Text
+              >
               {category.name}
               </Typography.Text>
             </span>
@@ -106,7 +108,7 @@ function FirstLevelCategory({
         <Layout.Sider
           className={'.my-menu-sider'}
           theme={'light'}
-          width={'250px'}
+          width={'220px'}
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
@@ -115,12 +117,13 @@ function FirstLevelCategory({
           onCollapse={(collapsed, type) => {
             console.log(collapsed, type);
           }}
+          style={{background: 'transparent', fontWeight: 'bold'}}
         >
           <Menu
             style={{
               // width: 'fit-content',
               height: '100%',
-              // background: 'none',
+              background: 'transparent',
             }}
             // mode="vertical"
             items={items}

@@ -2,7 +2,7 @@ import {createFromIconfontCN} from '@ant-design/icons';
 import './icon.less'
 
 const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/c/font_3868496_wyw5d7xlfvf.js',
+  scriptUrl: '//at.alicdn.com/t/c/font_3868496_jineofstzm.js',
 });
 
 const style = {
@@ -20,3 +20,4 @@ export const Product = (props) => <IconFont
 export const Category = (props) => <IconFont className='my-iconfont' type={'icon-category'} {...props} />
 export const Prime = (props) => <IconFont className='my-iconfont' type={'icon-a-VIPhuiyuanhuiyuanka'} {...props} />
 export const GiftCardBonus = (props) => <IconFont className='my-iconfont' type={'icon-Gift-Card'} {...props} />
+export const Project = (props) => <IconFont className='my-iconfont' type={'icon-project'} {...props} />

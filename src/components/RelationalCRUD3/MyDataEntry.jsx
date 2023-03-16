@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Form, Input, Modal, Select as AntdSelect, Upload} from "antd";
+import {Form, Input, InputNumber, Modal, Select as AntdSelect, Upload} from "antd";
 import {PlusOutlined, LoadingOutlined} from '@ant-design/icons';
 import constant from '../../utils/constant';
 import {useMemo} from 'react';
@@ -8,6 +8,34 @@ import MyCRUDDataDisplayerHandler from './MyCRUDDataDisplayerHandler';
 import {MinusCircleOutlined,} from "@ant-design/icons";
 import MySpace from '../Layout/MySpace';
 
+const Phone = ({
+  phoneCode = '1',
+}) => {
+  return <InputNumber
+    style={{
+      width: '100%',
+    }}
+    placeholder="+1(757) 912 7580"
+    formatter={
+      input => {
+        if (!input || input.length === 0) return '+1 ';
+        const phoneNumber = input.replace(/[^\d]/g, '').slice(1, 11);
+        const phoneNumberLength = phoneNumber.length;
+        if (phoneNumberLength <= 0) {
+          return '+1 ';
+        } else if (phoneNumberLength <= 3) {
+          return `+1(${phoneNumber})`;
+        } else if (phoneNumberLength < 7) {
+          return `+1(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+        } else {
+          return `+1(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)} ${phoneNumber.slice(6, 10)}`;
+        }
+      }
+    }
+    parser={input => input.replace(/[^\d]/g, '')}
+    width={'100%'}
+  />
+}
 const AutoSizeText = ({
   key,
   initWidth = 100,
@@ -68,7 +96,6 @@ const Select = ({
   </AntdSelect>
 }
 
-
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -94,11 +121,11 @@ const MultiImage = ({
     setPreviewOpen(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
-  const handleChange = ({ fileList: newFileList }) => {
+  const handleChange = ({fileList: newFileList}) => {
 
     setFileList(newFileList);
   }
-  const customRequest = ({ file, onSuccess }) => {
+  const customRequest = ({file, onSuccess}) => {
 
     setTimeout(() => {
       onSuccess("ok");
@@ -118,7 +145,7 @@ const MultiImage = ({
   }
   const uploadButton = (
     <div>
-      <PlusOutlined />
+      <PlusOutlined/>
       <div
         style={{
           marginTop: 8,
@@ -130,26 +157,26 @@ const MultiImage = ({
   );
   return (
 
-      <Upload
-        fileList={fileList}
-        listType="picture-card"
-        onPreview={handlePreview}
-        onChange={handleChange}
-        customRequest={customRequest}
-        beforeUpload={beforeUpload}
-      >
-        {fileList.length <= maxCount && uploadButton}
-        {/*{uploadButton}*/}
-        <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-          <img
-            alt="example"
-            style={{
-              width: '100%',
-            }}
-            src={previewImage}
-          />
-        </Modal>
-      </Upload>
+    <Upload
+      fileList={fileList}
+      listType="picture-card"
+      onPreview={handlePreview}
+      onChange={handleChange}
+      customRequest={customRequest}
+      beforeUpload={beforeUpload}
+    >
+      {fileList.length <= maxCount && uploadButton}
+      {/*{uploadButton}*/}
+      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+        <img
+          alt="example"
+          style={{
+            width: '100%',
+          }}
+          src={previewImage}
+        />
+      </Modal>
+    </Upload>
   );
 };
 export default {

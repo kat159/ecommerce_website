@@ -335,8 +335,8 @@ function Manage(props) {
         if (skuIdsToUpdate.length > 0) {
           const skuListToUpdate = skuIdsToUpdate.map(skuId => {
             const sku = curSkuIdToSkuMap[skuId]
-            const {id, name, price, subtitle, title, description} = sku
-            return {id, name, price, subtitle, title, description,}
+            const {id, name, price, subtitle, title, description, stock, primeDiscount} = sku
+            return {id, name, price, subtitle, title, description, stock, primeDiscount}
           })
 
           await skuService.updateAll(skuListToUpdate)
@@ -529,6 +529,46 @@ function Manage(props) {
           }
         },
         {
+          title: 'Stock',
+          dataIndex: 'stock',
+          key: 'stock',
+          render: (text, record, index) => {
+            return <Form.Item
+              name={['skus', index, 'stock']}
+              label="Stock"
+              // rules={[{required: true, message: 'Please input stock'}]}
+              noStyle={true}
+            >
+              <InputNumber
+                min={0}
+                precision={0}
+                step={1}
+              />
+            </Form.Item>
+          }
+        },
+        {
+          title: 'discount %',
+          dataIndex: 'primeDiscount',
+          key: 'primeDiscount',
+          render: (text, record, index) => {
+            return <Form.Item
+              name={['skus', index, 'primeDiscount']}
+              label="Discount"
+              // rules={[{required: true, message: 'Please input discount'}]}
+              noStyle={true}
+            >
+              <InputNumber
+                min={0}
+                max={100}
+                precision={2}
+                step={0.01}
+              />
+            </Form.Item>
+          }
+
+        },
+        {
           title: 'Action',
           key: 'action',
           render: (text, record, index) => (
@@ -710,9 +750,24 @@ function Manage(props) {
                                           {/*  // key={uploaderData.thumbUrl ?? uploaderData.url}  // NOTE: key，必须用thumbUrl, 添加图片的时候， 不会更新， key的更新会强制加载*/}
                                           {/*  key={uuid()}*/}
                                           {/*/>*/}
-                                          <div key={index} style={{ width: '100px', height: '100px', margin: '10px', border: '1px solid #eee', borderRadius: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                            <div style={{ width: '100%', height: '100%', overflow: 'hidden', padding: '10px' }}>
-                                              <img src={url} alt={`image-${index}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                          <div key={index} style={{
+                                            width: '100px',
+                                            height: '100px',
+                                            margin: '10px',
+                                            border: '1px solid #eee',
+                                            borderRadius: '20px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                          }}>
+                                            <div style={{
+                                              width: '100%',
+                                              height: '100%',
+                                              overflow: 'hidden',
+                                              padding: '10px'
+                                            }}>
+                                              <img src={url} alt={`image-${index}`}
+                                                   style={{width: '100%', height: '100%', objectFit: 'contain'}}/>
                                             </div>
                                           </div>
                                         </Checkbox>
@@ -730,75 +785,75 @@ function Manage(props) {
                       )
                     }
                   }}
-                  />
+                />
               </Form.Item>
             </Collapse.Panel>
           </Collapse>
         </Form>
       )
     }
-      return (
-        <div>
-          <Row>
-            <Col flex>
-              <Steps
-                current={currentStep}
-                onChange={onStepChange}
-                items={[
-                  {
-                    title: 'Basic Information',
-                  },
-                  {
-                    title: 'Specification Attributes',
-                  },
-                  {
-                    title: 'Sku Information',
-                  },
-                  {
-                    title: 'Display Settings',
-                  }
-                ]}
-                direction={'vertical'}
-                size={'small'}
-              />
-            </Col>
-            <Col>
-              <Divider type="vertical" style={{height: '100%'}}/>
-            </Col>
-            <Col flex={'1 1 500px'} style={{maxWidth: '1000px'}}>
-              {
-                currentStep === 0 ? <BasicInfoForm/>
-                  : currentStep === 1 ? <SpecAttrForm/>
-                    : currentStep === 2 ? <SkuInfoForm/>
-                      : <div>Display Settings</div>
-              }
-            </Col>
-            <Space
-              style={{
-                position: 'fixed',
-                bottom: '10%',
-                // minBottom: '10%',
-                display: 'flex',
-              }}
-            >
-              <Button type={'primary'} onClick={() => setEditingProduct(null)}>Back</Button>
-              <Button type={'primary'} onClick={() => {
-                onClickSave()
-              }}>Save</Button>
-            </Space>
+    return (
+      <div>
+        <Row>
+          <Col flex>
+            <Steps
+              current={currentStep}
+              onChange={onStepChange}
+              items={[
+                {
+                  title: 'Basic Information',
+                },
+                {
+                  title: 'Specification Attributes',
+                },
+                {
+                  title: 'Sku Information',
+                },
+                {
+                  title: 'Display Settings',
+                }
+              ]}
+              direction={'vertical'}
+              size={'small'}
+            />
+          </Col>
+          <Col>
+            <Divider type="vertical" style={{height: '100%'}}/>
+          </Col>
+          <Col flex={'1 1 500px'} style={{maxWidth: '1000px'}}>
+            {
+              currentStep === 0 ? <BasicInfoForm/>
+                : currentStep === 1 ? <SpecAttrForm/>
+                  : currentStep === 2 ? <SkuInfoForm/>
+                    : <div>Display Settings</div>
+            }
+          </Col>
+          <Space
+            style={{
+              position: 'fixed',
+              bottom: '10%',
+              // minBottom: '10%',
+              display: 'flex',
+            }}
+          >
+            <Button type={'primary'} onClick={() => setEditingProduct(null)}>Back</Button>
+            <Button type={'primary'} onClick={() => {
+              onClickSave()
+            }}>Save</Button>
+          </Space>
 
-          </Row>
+        </Row>
 
-        </div>
-      )
-    }
-      return (
-        <div>
-          {
-            editingProduct ? <ProductEditPage/> : <ProductTable/>
-          }
-        </div>
-      );
-    }
+      </div>
+    )
+  }
+  return (
+    <div>
+      {
+        editingProduct ? <ProductEditPage/> : <ProductTable/>
+      }
+    </div>
+  );
+}
 
-    export default Manage;
+export default Manage;

@@ -82,7 +82,6 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Ant Design Pro',
   layout: {
     locale: true,
     ...defaultSettings,
@@ -163,24 +162,31 @@ export default defineConfig({
     // {
     //   // member service
     //   requestLibPath: "import { request } from '@umijs/max'",
-    //   schemaPath: "http://localhost:8000/v3/api-docs/",
-    //   projectName: 'ecommerce-dbms-member-service',
+    //   schemaPath: "http://localhost:8001/v3/api-docs/",
+    //   projectName: 'dbms-member-addition',
     //   mock: false,
     // },
     // {
-    //   // order service
+    //   // member service
     //   requestLibPath: "import { request } from '@umijs/max'",
-    //   schemaPath: "http://localhost:9000/v3/api-docs/",
-    //   projectName: 'ecommerce-dbms-order-service',
+    //   schemaPath: "http://localhost:20000/v3/api-docs/",
+    //   projectName: 'country',
     //   mock: false,
     // },
     {
-      // product service
+      // order service
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: "http://localhost:10000/v3/api-docs/",
-      projectName: 'dbms-product',
+      schemaPath: "http://localhost:9000/v3/api-docs/",
+      projectName: 'dbms-order',
       mock: false,
     },
+    // {
+    //   // product service
+    //   requestLibPath: "import { request } from '@umijs/max'",
+    //   schemaPath: "http://localhost:10000/v3/api-docs/",
+    //   projectName: 'dbms-product',
+    //   mock: false,
+    // },
     // {
     //   // warehouse service
     //   requestLibPath: "import { request } from '@umijs/max'",

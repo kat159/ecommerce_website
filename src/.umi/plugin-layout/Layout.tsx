@@ -84,9 +84,8 @@ export default (props: any) => {
   "fixedHeader": false,
   "fixSiderbar": true,
   "colorWeak": false,
-  "title": "Ant Design Pro",
+  "title": "Ecommerce Admin",
   "pwa": true,
-  "logo": "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
   "iconfontUrl": "",
   "token": {}
 };

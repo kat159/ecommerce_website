@@ -68,3 +68,19 @@ export async function page(
     ...(options || {}),
   });
 }
+
+export async function getAll(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.page5Params,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result>('/product/sku', {
+    method: 'GET',
+    params: {
+      ...params,
+      params: undefined,
+      ...params['params'],
+    },
+    ...(options || {}),
+  });
+}

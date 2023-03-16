@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import {AppstoreOutlined, MailOutlined, SettingOutlined} from '@ant-design/icons';
 import {Layout, Menu, Typography} from 'antd';
 import {useModel, history} from "umi";

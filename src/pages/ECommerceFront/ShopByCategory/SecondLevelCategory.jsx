@@ -1,8 +1,13 @@
+/* eslint-disable react/jsx-no-undef */
 import React from 'react';
 import {history, useModel} from "@/.umi/exports";
 import {Card, Col, Divider, Layout, Menu, Row, Typography} from "antd";
 import MyImage from "@/components/DataDisplay/MyImage";
-import {GiftOutlined} from "@ant-design/icons";
+import {CaretRightOutlined, GiftOutlined, RightOutlined} from "@ant-design/icons";
+
+function CaretRightOutlinedRightOutlined() {
+  return null;
+}
 
 function SecondLevelCategory({
   curCategory
@@ -105,7 +110,7 @@ function SecondLevelCategory({
         <Layout.Sider
           className={'.my-menu-sider'}
           theme={"light"}
-          width={'250px'}
+          width={'220px'}
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
@@ -114,12 +119,13 @@ function SecondLevelCategory({
           onCollapse={(collapsed, type) => {
             console.log(collapsed, type);
           }}
+          style={{background: 'transparent', fontWeight: 'bold'}}
         >
           <Menu
             style={{
               // width: 'fit-content',
               height: '100%',
-              // background: 'none',
+              background: 'transparent'
             }}
             // mode="vertical"
             items={items}
