@@ -1,8 +1,22 @@
 /* eslint-disable react/jsx-no-undef */
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import dbmsProduct from "@/services/dbms-product";
 import {useModel, history} from "umi";
-import {Button, Card, Checkbox, Col, Collapse, InputNumber, Layout, Menu, Pagination, Row, Select, Space} from "antd";
+import {
+  Button,
+  Card,
+  Checkbox,
+  Col,
+  Collapse,
+  InputNumber,
+  Layout,
+  Menu,
+  Pagination,
+  Rate,
+  Row,
+  Select,
+  Space, Spin, Typography
+} from "antd";
 import {CaretRightOutlined, GiftOutlined, ThunderboltOutlined} from "@ant-design/icons";
 import './less.less';
 import {v4 as uuid} from "uuid";
@@ -28,8 +42,26 @@ function ThirdLevelCategory({
     searchSaleAttrs,
     specAttrs,
     searchSpecAttrs,
+    browseHistoryPagination, browseHistoryPaginationLoading
   } = useModel('ECommerceFront.attribute');
+  const [viewportSize, setViewportSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+  useEffect(() => {
+    const handleResize = () => {
 
+      setViewportSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   useEffect(() => {
     fetchAttrGroups(categoryIds[2]);
   }, [])
@@ -118,14 +150,15 @@ function ThirdLevelCategory({
   }, [searchSaleAttrs, searchSpecAttrs, saleAttrFilters, specAttrFilters])
 
   const [productList, setProductList] = React.useState([])
+  const [productListLoading, setProductListLoading] = React.useState(true)
   const [pagination, setPagination] = React.useState({
     current: 1,
     pageSize: 36,
     total: 0,
     list: [],
     onChange: (page, pageSize) => {
-      console.log('page', page)
-      console.log('pageSize', pageSize)
+
+
       // setPagination({
       //   ...pagination,
       //   current: page,
@@ -141,6 +174,7 @@ function ThirdLevelCategory({
     current,
     pageSize,
   }) => {
+    setProductListLoading(true)
     const params = {
       categoryId: categoryIds[2],
       saleAttrFilters: Object.keys(saleAttrFilters).map(attrId => {
@@ -162,14 +196,14 @@ function ThirdLevelCategory({
       [constant.CURRENT_PAGE_STR]: current,
       [constant.PAGE_SIZE_STR]: pageSize,
     }
-    const res = await productService.search(params)
+    const res = await productService.search(params).catch(e => setProductListLoading(false))
     const data = res?.data ?? {
       list: [],
       total: 0,
       [constant.CURRENT_PAGE_STR]: 1,
       [constant.PAGE_SIZE_STR]: pagination.pageSize,
     }
-    console.log('data', data)
+
     // preload image
     if (data.list) {
       for (const sku of data.list) {
@@ -182,23 +216,23 @@ function ThirdLevelCategory({
     }
     // set data
     setPagination({...pagination, ...data})
+    setProductListLoading(false)
   }
   useEffect(() => {
-    console.log('=====filter changed=====')
-    console.log('saleAttrFilters', saleAttrFilters)
-    console.log('specAttrFilters', specAttrFilters)
-    console.log('priceRange', priceRange)
-    console.log('categoryIds', categoryIds)
-    console.log('selectedSortOption', selectedSortOption)
-    console.log('pagination', pagination)
+
+
+
+
+
+
+
     fetchProductList({
       current: 1,
       pageSize: pagination.pageSize,
     })
   }, [saleAttrFilters, specAttrFilters, selectedSortOption])
-
   const onSkuClick = (sku) => {
-    console.log('click sku', sku)
+
     dbmsMember.memberController.addToBrowseHistory(
       {username: userInfo.username},
       [{skuId: sku.id}],
@@ -291,7 +325,7 @@ function ThirdLevelCategory({
     <div className={'category-product-list'}
          style={{
            margin: '10px',
-           padding: '10px',
+           padding: '30px',
            background: 'rgba(0, 0, 0, 0.04)',
          }}
     >
@@ -300,7 +334,7 @@ function ThirdLevelCategory({
       >
         {
           pagination.list.map((sku, index) => {
-            let {skuImages, name, price, saleCount, primeDiscount, giftCardBonus, rating, stock} = sku.sku
+            let {skuImages, name, price, saleCount, primeDiscount, giftCardBonus, rating, ratingCount, stock} = sku.sku
             // to 2 decimal places
             price = Math.round(price * 100) / 100
             const curPrice = Math.round(price * (1 - primeDiscount / 100) * 100) / 100
@@ -325,15 +359,28 @@ function ThirdLevelCategory({
                   cover={
                     <div
                       style={{
-                        paddingTop: '30px',
+                        paddingTop: '10%',
                       }}
                     >
-                      <MyImage.FitSize url={skuImages?.[0].img}/>
+                      <MyImage.FitSize url={skuImages?.[0]?.img}/>
                     </div>
                   }
                 >
                   <Meta
-                    title={name}
+                    title={
+                      <Typography.Title
+                        ellipsis={{
+                          rows: 1,
+                        }}
+                        style={{
+                          marginTop: '0px',
+                          marginBottom: '0px',
+                        }}
+                        level={5}
+                        >
+                        {name}
+                      </Typography.Title>
+                    }
                     // title={'asdfasdfasdfsfsd sadfasasdasdasdasdasddf asdasdasd asdasd'}
                     // description={'asdfasdfasdfsfsd sadfasasdasdasdasdasddf asdasdasd asdasd'}
                     description={
@@ -348,18 +395,23 @@ function ThirdLevelCategory({
                             </>
                             : <span className="discounted-price">${price}</span>
                         }
-                        {
-                          // giftCardBonus && <div className="gift-bonus">
-                          //   <span className="bonus-label"><GiftOutlined/>Gift Card Bonus:</span>
-                          //   <span className="bonus-value">${giftCardBonus}</span>
-                          // </div>
-                        }
                       </div>
                     }
-                    // 这里description过长会导致span失效，内容超出屏幕需要横向scroll，不知道为什么
-                    //
-                    // description="1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
                   />
+                  <span>
+                          <Rate value={ratingCount ? rating : 0}
+                                style={{
+                                  fontSize: '15px',
+                                }}
+                                disabled
+                          />
+                          <span className="ant-rate-text"
+                                style={{
+                                  color: '#7a7a7a',
+                                  fontSize: '14px',
+                                }}
+                          >({ratingCount ?? 0})</span>
+                        </span>
                 </Card>
               </Col>
             )
@@ -379,8 +431,6 @@ function ThirdLevelCategory({
       </Row>
     </div>
   )
-  console.log('screen.width', screen.width)
-  console.log('window.innerWidth', innerWidth)
   const FilterSider = useMemo(() => {
     return <Layout
       hasSider={true}
@@ -391,10 +441,10 @@ function ThirdLevelCategory({
         breakpoint="lg"
         collapsedWidth="0"
         onBreakpoint={(broken) => {
-          console.log(broken);
+
         }}
         onCollapse={(collapsed, type) => {
-          console.log(collapsed, type);
+
         }}
         theme={'light'}
       >
@@ -409,29 +459,101 @@ function ThirdLevelCategory({
       </Layout.Sider>
     </Layout>
   }, [menuProps])
-
+  const BrowseHistory = useMemo(() => {
+    return <div className={'category-browse-history'}>
+      <Typography.Title
+        level={4}
+        style={{
+          marginBottom: '0px',
+        }}
+      >Browse History</Typography.Title>
+      {
+        browseHistoryPagination?.list?.slice(0, 5).map((sku, index) => {
+          let {skuImages, name, price, saleCount, primeDiscount, giftCardBonus, rating, ratingCount, stock} = sku.sku
+          // to 2 decimal places
+          price = Math.round(price * 100) / 100
+          const curPrice = Math.round(price * (1 - primeDiscount / 100) * 100) / 100
+          rating = Math.round(rating * 10) / 10
+          return (
+            <div
+              key={index}
+              className={'browse-history-item'}
+              onClick={(e) => {
+                e.stopPropagation()
+                onSkuClick(sku?.sku)
+              }}
+            >
+              <div className={'browse-history-item-image'}>
+                <MyImage.FitSize url={skuImages?.[0].img}/>
+              </div>
+              <div className={'browse-history-item-info'}>
+                <Typography.Title
+                  ellipsis={{
+                    rows: 1,
+                  }}
+                  style={{
+                    marginTop: '0px',
+                    marginBottom: '0px',
+                  }}
+                  level={5}
+                >{name}</Typography.Title>
+                <div className="price">
+                  {
+                    primeDiscount && primeDiscount > 0
+                      ? <>
+                        <span className="original-price">${price}</span>
+                        <span className="discounted-price">
+                            ${curPrice}
+                          </span>
+                      </>
+                      : <span className="discounted-price">${price}</span>
+                  }
+                </div>
+                <span>
+                          <Rate value={ratingCount ? rating : 0}
+                                style={{
+                                  fontSize: '15px',
+                                }}
+                                disabled
+                          />
+                          <span className="ant-rate-text"
+                                style={{
+                                  color: '#7a7a7a',
+                                  fontSize: '14px',
+                                }}
+                          >({ratingCount ?? 0})</span>
+                        </span>
+              </div>
+            </div>
+          )
+        })
+      }
+    </div>
+  })
   return (
-    <Row
-      className={'ant-row-no-newline third-level-category-product-list'}
-      style={{}}
-    >
-      <Col id={'side-filter'}>
-        {
-          menuProps?.items?.length > 0
-          && FilterSider
-        }
-      </Col>
-      <Col id={'right-content'}
-           flex={'auto'}
-           style={{
-             maxWidth: screen.width * 0.7
-           }}
+    <Spin spinning={productListLoading}>
+      <Row
+        className={'ant-row-no-newline third-level-category-product-list'}
+        style={{}}
       >
-        {HeadFilter}
-        {ProductList}
-      </Col>
-      {/*<Col span={2}/>*/}
-    </Row>
+        <Col id={'side-filter'}>
+          {
+            menuProps?.items?.length > 0
+            && FilterSider
+          }
+        </Col>
+        <Col id={'right-content'}
+             flex={'auto'}
+             style={{
+               maxWidth: screen.width * 0.7
+             }}
+        >
+          {HeadFilter}
+          {ProductList}
+        </Col>
+        {/*<Col span={2}/>*/}
+      </Row>
+    </Spin>
   );
 }
 

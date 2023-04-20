@@ -22,31 +22,17 @@ import {
   FieldNumberOutlined, MinusOutlined, PlusOutlined,
   ShrinkOutlined
 } from "@ant-design/icons";
+import _constant from "@/pages/Backtest/Criterion/_constant";
 import {v4 as uuid} from 'uuid';
 import './criterion.less'
-const VARIABLE = 'variable'
-const PARAM = 'param'
-const FUNCTION = 'function'
-const INDICATOR = 'indicator'
-const DATA = 'data'
-const INPUT = 'input'
-const marketData = [
-  {
-    name: 'open',
-  },
-  {
-    name: 'close',
-  },
-  {
-    name: 'high',
-  },
-  {
-    name: 'low',
-  },
-  {
-    name: 'volume',
-  },
-]
+import CriterionBuilder from "@/pages/Backtest/Criterion/CriterionBuilder";
+
+const {
+  VARIABLE, PARAM, FUNCTION, INDICATOR, DATA, INPUT,
+  VARIABLE_COLOR, PARAM_COLOR, FUNCTION_COLOR, INDICATOR_COLOR, DATA_COLOR, INPUT_COLOR,
+} = _constant
+
+const marketData = ['open', 'close', 'high', 'low', 'volume'].map((v) => ({_type: DATA, name: v, id: v}))
 
 function Criterion(props) {
   const {
@@ -60,25 +46,28 @@ function Criterion(props) {
     selectable: true,
     inputable: false,
     value: null,
-    _id: uuid(),
+    _nodeId: uuid(),
   })
-  const idMap = useMemo(() => {
+  const itemIdMap = useMemo(() => {
     const map = {}
     marketData.forEach(item => {
       map[item.name] = {
         ...item,
+        id: item.name,
         _type: DATA
       }
     })
     indicators.forEach(indicator => {
       map[indicator.name] = {
         ...indicator,
+        id: indicator.name,
         _type: INDICATOR,
       }
     })
     functions.forEach(func => {
       map[func.name] = {
         ...func,
+        id: func.name,
         _type: FUNCTION,
       }
     })
@@ -99,67 +88,6 @@ function Criterion(props) {
   const [variableNum, setVariableNum] = React.useState(0)
   const [paramNum, setParamNum] = React.useState(0)
   const [tooltipsOnHover, setTooltipsOnHover] = React.useState(true)
-  const getFunctionTooltip = (func, text = '?', position = 'right', color = '#1890ff') => {
-    const {return_type, name, params} = func
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    context.font = '17px Arial';
-    let maxParamWidth = 0;
-    params.forEach(param => {
-      const {name, types} = param
-      const width = context.measureText(`${name}: ${types}`).width
-      if (width > maxParamWidth) {
-        maxParamWidth = width
-      }
-    })
-    return <span>
-      <Tooltip
-
-        placement={position}
-        overlayInnerStyle={{
-          width: maxParamWidth + 10,
-        }}
-        title={
-          <div
-            onClick={e => {
-              e.stopPropagation()
-              e.preventDefault()
-            }}
-          >
-            <div>Params:</div>
-            <div>
-              {params.map(param => <div style={{marginLeft: '10px'}}
-                                        key={param.name}>{param.name}: {param.types}</div>)}
-            </div>
-            <Divider style={{margin: '5px 0', borderColor: '#e8e8e8'}} dashed/>
-            <div>Return:</div>
-            <div style={{marginLeft: '10px'}}>{return_type}</div>
-            {
-              func.comments && <div>
-                <Divider style={{margin: '5px 0', borderColor: '#e8e8e8'}} dashed/>
-                <div>Description:</div>
-                {
-                  func.comments.split('\n').filter(line => line.trim() !== '').map((line, index) => <div
-                    style={{marginLeft: '10px'}} key={index}>{line}</div>)
-                }
-              </div>
-
-            }
-          </div>
-        }
-        trigger={tooltipsOnHover ? ['hover', 'click'] : ['click']}
-        destroyTooltipOnHide={false}
-      >
-        <span
-          style={{color: color}}
-          onClick={e => {
-            e.stopPropagation()
-            e.preventDefault()
-          }}
-        >{text}</span>
-      </Tooltip>
-    </span>
-  }
   const getFunctionLabel = (func) => {
     const {return_type, name, params} = func
     const canvas = document.createElement('canvas');
@@ -227,10 +155,11 @@ function Criterion(props) {
         </span>
       </span>
   }
-  const options = [
+  const itemOptions = [
     {
       value: 'data',
-      label: 'data',
+      // label: 'data',
+      label: <span style={{color: DATA_COLOR}}>data</span>,
       type: DATA,
       children: marketData.map(item => ({
         value: item.name,
@@ -263,7 +192,8 @@ function Criterion(props) {
     },
     {
       value: 'function',
-      label: 'function',
+      // label: 'function',
+      label: <span style={{color: FUNCTION_COLOR}}>function</span>,
       type: FUNCTION,
       children: functions.map(func => {
         return {
@@ -276,7 +206,8 @@ function Criterion(props) {
     },
     {
       value: 'indicator',
-      label: 'indicator',
+      // label: 'indicator',
+      label: <span style={{color: INDICATOR_COLOR}}>indicator</span>,
       type: INDICATOR,
       children: indicators.map(indicator => {
         return {
@@ -289,235 +220,29 @@ function Criterion(props) {
     },
   ].concat(variables.length === 0 ? [] : [{
     value: 'variable',
-    label: 'custom variable',
+    // label: 'custom variable',
+    label: <span style={{color: VARIABLE_COLOR}}>custom variable</span>,
     type: VARIABLE,
     children: variables.map(variable => {
       return {
         value: variable.id,
-        label: variable.id,
+        label: variable.name,
         type: VARIABLE,
       }
     })
   }]).concat(params.length === 0 ? [] : [{
     value: 'param',
-    label: 'custom param',
+    // label: 'custom param',
+    label: <span style={{color: PARAM_COLOR}}>custom param</span>,
     type: PARAM,
     children: params.map(param => {
       return {
         value: param.id,
-        label: param.id,
+        label: param.name,
         type: PARAM,
       }
     })
   }])
-  const CriterionBuilder = ({criterion, setNewCriterion}) => {
-    const [expanded, setExpanded] = useState(criterion._expanded ?? false)
-    const onSelect = ({selectedItemId, nodeId}) => {
-      const newCriterion = structuredClone(criterion)
-      const selectedItem = structuredClone(idMap[selectedItemId])
-
-      const update = (node) => {
-        if (node._id === nodeId) {
-          node.value = selectedItem
-          selectedItem.params?.forEach(param => {
-            param._id = uuid()
-            param.value = null
-          })
-        } else {
-          node?.value?.params?.forEach(update)
-        }
-      }
-      update(newCriterion)
-      setNewCriterion(newCriterion)
-    }
-    const ComponentBuilder = ({value, _id, selectable, inputable, depth = 0, isLastParam = true}) => {  // criterion tree : params = children
-      const CriterionSelector = ({
-        inputable = true,
-        selectable = true,
-      }) => {
-        const [isSelecting, setIsSelecting] = useState(true)
-
-        const Selector = <Cascader
-          size={'small'}
-          style={{width: '50px'}}
-          options={options}
-          onChange={(value, selectedOptions) => {
-            if (value === undefined || value === null) {
-              return
-            }
-            const last = selectedOptions[selectedOptions.length - 1]
-            const {type, value: v, info} = last
-            const item = idMap[v]
-            onSelect({selectedItemId: v, nodeId: _id})
-          }}
-          showSearch={{
-            filter: (inputValue, path) => {
-              return path && inputValue && path?.length > 1 && path?.[1]?.value !== path?.[0]?.value && path?.[1]?.value?.toLowerCase().indexOf(inputValue?.toLowerCase()) > -1
-            },
-            render: (inputValue, path) => {
-              return path && inputValue && path?.length > 1 && path?.[1]?.value !== path?.[0]?.value && path?.[1]?.value?.toLowerCase().indexOf(inputValue?.toLowerCase()) > -1 &&
-                <Row
-                  style={{width: '100%'}}
-                >
-                  <Col>{path[0].label} : </Col>
-                  <Col style={{
-                    marginLeft: '5px',
-                  }}
-                       flex={'auto'}
-                  >
-                    {path[1].label}
-                  </Col>
-                </Row>
-            }
-          }}
-          displayRender={(labels) => labels[labels.length - 1]}
-          onSearch={(value) => {
-          }}
-        />
-        const MyInput = <Input
-          size={'small'}
-          style={{width: '35px', padding: '0 0px'}}
-        />
-        const Both = <span>
-                <span>
-                  {isSelecting ? Selector : MyInput}
-                </span>
-                <span style={{marginLeft: '5px'}}>
-                  <FieldNumberOutlined
-                    className={'my-click-icon'}
-                    style={{
-                      fontSize: '16px',
-                      color: !isSelecting ? '#1890ff' : '#999',
-                    }}
-                    onClick={() => setIsSelecting(!isSelecting)}
-                  />
-                    {/*{isSelecting ? 'Input' : 'Select'}*/}
-                  {/*</FieldNumberOutlined>*/}
-                </span>
-              </span>
-        return !inputable ? Selector
-          : !selectable ? MyInput
-            : Both
-      }
-      let Res = null
-      const color = value?._type === DATA || value?._type === INPUT ? '#000000' : value?._type === PARAM ? '#52c41a' : value?._type === VARIABLE ? '#faad14' : value?._type === FUNCTION ? '#722ed1' : value?._type === INDICATOR ? '#13c2c2' : '#999'
-      const fontWeight = value?._type === FUNCTION || value?._type === INDICATOR ? 'bold' : 'normal'
-      if (expanded) {
-        if (value === null || value === undefined) {
-          Res = <CriterionSelector selectable={selectable} inputable={inputable}/>
-        } else {
-          if (value._type === DATA || value._type === PARAM || value._type === VARIABLE) {  // DATA / custom param / custom variable -> no param -> end
-            Res = <span>{value.name}</span>
-          } else if (value._type === FUNCTION || value._type === INDICATOR) {  // FUNCTION / INDICATOR -> has params -> continue
-            Res = <span>
-            {/*{value.name}*/}
-              {getFunctionTooltip(value, value.name, 'right', color)}
-              <span style={{marginRight: '5px'}}>(</span>
-              {
-                value.params.map((param, index) => <span key={index}>
-                {index > 0 ? expanded ? '' : ', ' : ''}
-                    <ComponentBuilder {...param} depth={depth + 1} isLastParam={index === value.params.length - 1}/>
-              </span>
-                )
-              }
-              {' )'}
-          </span>
-          } else {
-            console.error('unknown type', value._type)
-          }
-        }
-        return <div
-          style={{
-            color,
-            fontWeight,
-            marginLeft: depth === 0 ? 0 : `40px`,
-          }}
-        >
-          {
-            [INDICATOR, FUNCTION, PARAM, VARIABLE, DATA].includes(value?._type)
-            && <DeleteOutlined
-              className={'my-click-icon'} style={{color: '#999',}}
-              onClick={() => {
-                const newCriterion = structuredClone(criterion)
-                const update = (node) => {
-                  if (node._id === _id) {
-                    node.value = null
-                  } else {
-                    node?.value?.params?.forEach(update)
-                  }
-                }
-                update(newCriterion)
-                setNewCriterion(newCriterion)
-              }}/>
-          }
-          {Res}
-          {expanded && !isLastParam && ', '}
-        </div>
-      } else {
-        if (value === null || value === undefined) {
-          Res = <CriterionSelector selectable={selectable} inputable={inputable}/>
-        } else {
-          if (value._type === DATA || value._type === PARAM || value._type === VARIABLE) {  // DATA / custom param / custom variable -> no param -> end
-            Res = <span>{value.name}</span>
-          } else if (value._type === FUNCTION || value._type === INDICATOR) {  // FUNCTION / INDICATOR -> has params -> continue
-            Res = <span>
-            {getFunctionTooltip(value, value.name, 'bottomRight', color)}
-              <span style={{marginRight: '5px'}}>(</span>
-              {
-                value.params.map((param, index) => <span key={index}>
-                {index > 0 ? ', ' : ''}
-                    <ComponentBuilder {...param} depth={depth + 1}/>
-              </span>
-                )
-              }
-              {' )'}
-          </span>
-          } else {
-            console.error('unknown type', value._type)
-          }
-        }
-        return <span style={{
-          fontWeight,
-          color
-        }}>
-          {
-            [INDICATOR, FUNCTION, PARAM, VARIABLE, DATA].includes(value?._type)
-            && <DeleteOutlined
-              className={'my-click-icon'} style={{color: '#999',}}
-              onClick={() => {
-                const newCriterion = structuredClone(criterion)
-                const update = (node) => {
-                  if (node._id === _id) {
-                    node.value = null
-                  } else {
-                    node?.value?.params?.forEach(update)
-                  }
-                }
-                update(newCriterion)
-                setNewCriterion(newCriterion)
-              }}/>
-          }
-          {Res}
-        </span>
-      }
-    }
-    return <Row
-      // style={{alignItems: 'center',}}
-    >
-      <Col onClick={() => {
-        // setExpanded(!expanded)
-        const newCriterion = {...criterion}
-        newCriterion._expanded = !newCriterion._expanded
-        setNewCriterion(newCriterion)
-      }}>
-        {/*{expanded ? <CaretDownOutlined/> : <CaretRightOutlined/>}*/}
-        {expanded ? <ExpandAltOutlined className={'my-click-icon'}/> : <ShrinkOutlined className={'my-click-icon'}/>}
-      </Col>
-      <Col style={{marginLeft: '5px'}}>
-        <ComponentBuilder {...criterion}/>
-      </Col>
-    </Row>
-  }
   const checkParamAndVariableName = (name) => {
     for (const variable of variables) {
       if (variable.name === name) {
@@ -585,7 +310,15 @@ function Criterion(props) {
                       }
                     }}
                   />
-                  {param.name}:
+                  <span
+                    style={{
+                      marginRight: 5,
+                      color: PARAM_COLOR,
+                    }}
+                  >
+                    {param.name}:
+                  </span>
+
                 </Col>
                 <Col style={{marginLeft: 5}}>
                   <InputNumber
@@ -606,7 +339,6 @@ function Criterion(props) {
             </Col>
           })
         }
-
       </Row>
     )
   }
@@ -622,7 +354,6 @@ function Criterion(props) {
       name: `param${validNum}`,
       value: null,
       id: uuid(),
-      _id: uuid(),
     }]
     setParamNum(validNum + 1)
     setParams(newParams)
@@ -639,7 +370,6 @@ function Criterion(props) {
       name: `var${validNum}`,
       value: null,
       id: uuid(),
-      _id: uuid()
     }]
     setVariableNum(validNum + 1)
     setVariables(newVars)
@@ -657,12 +387,61 @@ function Criterion(props) {
       setVariables(newVariables)
     }
   }
+  const checkVariableCycleReference = () => {
+    const checkOneVariable = (node, visitedVariables) => {
+      const {_type, _nodeId, id, params, value} = node
+      if ([DATA, INPUT, PARAM].includes(_type)) {
+        // no children
+        return {hasCycle: false,}
+      } else if (VARIABLE === _type) {
+        const variable = itemIdMap[id]
+        if (variable === undefined || variable === null) {
+          return {hasCycle: false,}
+        }
+        if (visitedVariables.includes(id)) {
+          return {hasCycle: true,}
+        } else {
+          visitedVariables.add(id)
+          const res = checkOneVariable(value, visitedVariables)
+          visitedVariables.delete(id)
+          return res
+        }
+      } else if ([FUNCTION, INDICATOR].includes(_type)) {
+        const item = itemIdMap[id]
+        if (item === undefined || item === null) {
+          return {hasCycle: false,}
+        }
+        for (const param of params) {
+          const {value} = param
+          return checkOneVariable(value, visitedVariables)
+        }
+      } else {
+        console.error('unknown node type', node)
+        return {hasCycle: false,}
+      }
+    }
+    const visitedVariables = new Set()
+    for (const variable of variables) {
+      const res = checkOneVariable(variable, visitedVariables)
+      const {hasCycle, cycleVariableId} = res
+      if (hasCycle) {
+        return res
+      }
+    }
+    return {
+      hasCycle: false,
+    }
+  }
   const VariablesList = () => {
     return (
       <div>
         {
-          variables.map((variable, index) => <Row key={index}>
-              <Col>
+          variables.map((variable, index) => <Row key={index} style={{marginBottom: 10}}>
+              <Col
+                style={{
+                  marginTop: 2
+                }}
+              >
                 <DeleteOutlined
                   className={'my-click-icon'}
                   style={{marginRight: '2px',}}
@@ -670,18 +449,24 @@ function Criterion(props) {
                 />
                 <EditOutlined
                   className={'my-click-icon'}
-                  onClick={() => {updateVariableName(index)}}
+                  onClick={() => {
+                    updateVariableName(index)
+                  }}
                 />
-                <span style={{marginLeft: '2px', fontWeight: 'bold',}}>{variable.name}: </span>
+                <span style={{marginLeft: '2px', fontWeight: 'bold', color: VARIABLE_COLOR}}>{variable.name}: </span>
+
               </Col>
               <Col style={{marginLeft: '8px',}}>
                 <CriterionBuilder
                   criterion={variable} depth={0}
-                  isLastParam={index === variables.length - 1}
+                  // isLastParam={index === variables.length - 1}
                   setNewCriterion={(newCriterion) => {
                     const newVariables = variables.map((variable, i) => i === index ? newCriterion : variable)
                     setVariables(newVariables)
                   }}
+                  itemIdMap={itemIdMap}
+                  itemOptions={itemOptions}
+                  tooltipsOnHover={tooltipsOnHover}
                 />
               </Col>
 
@@ -694,11 +479,12 @@ function Criterion(props) {
   return (
     <Row className={'criterion-builder-page'}>
       <Col span={20} style={{marginLeft: '20px',}}>
-        
         <Row className={'criterion-builder-toolbox'} style={{marginTop: '20px',}}>
           <Col span={1}/>
           <Col>
-            <Radio onClick={() => {setTooltipsOnHover(!tooltipsOnHover)}} checked={tooltipsOnHover}
+            <Radio onClick={() => {
+              setTooltipsOnHover(!tooltipsOnHover)
+            }} checked={tooltipsOnHover}
             >
               Tooltips on hover
             </Radio>
@@ -708,7 +494,7 @@ function Criterion(props) {
         <Divider orientation="left">Custom Parameters
           <PlusOutlined className={'my-click-icon'} style={{marginLeft: '10px',}} onClick={addParam}/>
         </Divider>
-        <Row className={'criterion-builder-params'}>
+        <Row className={'criterion-builder-params'} style={{alignItems: 'center',}}>
           <Col span={1}/>
           <ParamsList/>
         </Row>
@@ -730,6 +516,9 @@ function Criterion(props) {
             <CriterionBuilder
               criterion={finalCriterion}
               setNewCriterion={(newCriterion) => setFinalCriterion(newCriterion)}
+              itemIdMap={itemIdMap}
+              itemOptions={itemOptions}
+              tooltipsOnHover={tooltipsOnHover}
             />
           </Col>
         </Row>

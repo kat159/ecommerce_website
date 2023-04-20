@@ -16,7 +16,8 @@ import {
   Space,
   Steps,
   Table,
-  Tag
+  Tag,
+  message
 } from "antd";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {useForm} from "antd/es/form/Form";
@@ -37,6 +38,7 @@ const skuService = dbmsProduct.skuController;
 function Manage(props) {
   const [tableData, setTableData] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
     fetchProductPage({current: 1, pageSize: 10});
     // setInterval(() => {
@@ -129,14 +131,14 @@ function Manage(props) {
         dataIndex: 'brandName',
         key: 'brandName',
       },
-      {
-        title: 'Total Sales',
-        dataIndex: 'skus',
-        key: 'salesCount',
-        render: (sku) => {
-          return sku.reduce((count, sku) => count + (sku.salesCount ?? 0), 0)
-        }
-      },
+      // {
+      //   title: 'Total Sales',
+      //   dataIndex: 'skus',
+      //   key: 'salesCount',
+      //   render: (sku) => {
+      //     return sku.reduce((count, sku) => count + (sku.salesCount ?? 0), 0)
+      //   }
+      // },
       {
         title: 'Action',
         key: 'action',
@@ -217,7 +219,6 @@ function Manage(props) {
       const preData = initialProductInfo;
       const curData = await getNewAggregateFormData();
       let toUpdate = {id: initProductInfo.id}
-
       const checkProductInfo = async () => {
         const {images: productImages, ...productInfo} = curData.basicInfo
         const {images: preProductImages, ...preProductInfo} = preData.basicInfo
@@ -264,7 +265,6 @@ function Manage(props) {
 
         }
       }
-
       const imageTmpIdToIdMap = {}
       const saveSkuImages = async () => {
         const preSkuImages = preData.skuImages;

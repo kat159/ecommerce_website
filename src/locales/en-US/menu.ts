@@ -1,7 +1,7 @@
 export default {
   'menu.pms': 'Product Management',
   'menu.pms.category': 'Category & Attribute',
-  'menu.pms.brand': 'Brand & Category',
+  'menu.pms.brand': 'Brand',
   'menu.pms.product': 'Product',
   'menu.pms.product.manage': 'Manage Product',
   'menu.pms.product.productManage': 'Product Manage',

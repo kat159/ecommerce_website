@@ -43,7 +43,7 @@ const EditForm = ({
   useEffect(() => {
     countryService.getAll({}).then(res => {
       setCounties(res.data)
-      console.log('res.data', res.data)
+
       form.setFieldsValue(initialData)
     })
   }, [])
@@ -62,7 +62,7 @@ const EditForm = ({
 
   useEffect(() => {
     if (selectedStateId) {
-      console.log('selectedStateId', selectedStateId)
+
       statesService
       .getAllCities({id: selectedStateId})
       .then(res => {
@@ -78,7 +78,7 @@ const EditForm = ({
     data.country = counties.find(country => country.id === data.countryId).name
     data.countryCode = counties.find(country => country.id === data.countryId).iso3
     data.stateCode = states.find(state => state.id === data.stateId).iso2
-    console.log('data', data, counties.find(country => country.id === data.countryId))
+
     onSubmit(data)
   }
 
@@ -137,7 +137,7 @@ const EditForm = ({
 
 function CheckOut(props) {
   const location = useLocation()
-  console.log('location', location)
+
   const {checkOutSkus=[], orderUUID} = location.state ?? {}
   useEffect(() => {
     if (!checkOutSkus || !orderUUID) {
@@ -179,7 +179,7 @@ function CheckOut(props) {
     setUpdateToDateCheckOutSkus(newCheckOutSkus)
   }
   const fetchShippingAddress = async () => {
-    console.log('memberservice', memberService)
+
     const res = await memberService.pageAddress({
       username: userInfo.username,
       params: {
@@ -187,14 +187,14 @@ function CheckOut(props) {
         pageSize: 100,
       }
     })
-    console.log('res', res)
+
     setShippingAddressList(res.data.list)
   }
   useEffect(() => {
     if (checkOutSkus?.length === 0) { // 购物车页面跳转必须>0, 并且return中在组件销毁时设置为了[], 如果=0，证明是其他方式跳转
       history.push('/ecommerce/front/cart')
     }
-    console.log('checkOutSkus111', checkOutSkus)
+
     fetchSkus()
     fetchShippingAddress()
   }, [])
@@ -213,10 +213,6 @@ function CheckOut(props) {
                 onClick={() => {
                   setSelectedShippingAddressIndex(index)
                 }}
-                // actions={[
-                //   <a>edit</a>,
-                //   <a>delete</a>,
-                // ]}
               >
                 <Typography.Paragraph style={{fontSize: 14, fontWeight: 500, marginBottom: 0,}}
                 >{item.name}, {item.tele}</Typography.Paragraph>
@@ -357,11 +353,17 @@ function CheckOut(props) {
     return res
   }, [updateToDateCheckOutSkus])
   const onClickPlaceOrder = () => {
+
+    if (!shippingAddressList || shippingAddressList.length === 0) {
+      message.warning('Please add shipping address')
+      return
+    }
     const orderService = dbmsOrder.orderController
     const selectAddress = shippingAddressList[selectedShippingAddressIndex]
-    console.log(updateToDateCheckOutSkus)
+
     const body = {
       memberId: userInfo.id,
+      username: userInfo.username,
       orderUUID: orderUUID, // TODO
       shippingName: selectAddress.name,
       shippingPhone: selectAddress.tele,
@@ -388,14 +390,12 @@ function CheckOut(props) {
         }
       })
     }
-    console.log(body)
+
     orderService.placeOrder(body).then(
       res => {
-        console.log(res)
+        message.success('Place order successfully')
+        history.push('/ecommerce/front/account/order')
       },
-      err => {
-        console.log("222", err)
-      }
     )
   }
   return (
@@ -438,7 +438,7 @@ function CheckOut(props) {
           <Radio.Group
             value={selectedShippingTime}
             onChange={e => {
-              console.log(e.target.value)
+
               setSelectedShippingTime(e.target.value)
             }}
           >

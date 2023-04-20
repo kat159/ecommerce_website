@@ -10,9 +10,10 @@ import {
   InputNumber,
   Row,
   Select,
-  Space,
+  Space, Spin,
   Steps,
-  Table
+  Table,
+  message
 } from 'antd';
 import dbmsProduct from "@/services/dbms-product";
 import MyFormItem from "@/components/RelationalCRUD3/MyFormItem";
@@ -25,6 +26,8 @@ import MyDataEntry from "@/components/RelationalCRUD3/MyDataEntry";
 import MySpace from "@/components/Layout/MySpace";
 import {v4 as uuidv4} from 'uuid';
 import googleCloudStorage from "@/services/third-party-service/googleCloudStorage";
+import myFormUtils from "@/utils/myFormUtils";
+import {history} from "umi";
 
 const categoryService = dbmsProduct.categoryController;
 const brandService = dbmsProduct.brandController;
@@ -191,20 +194,32 @@ function Publish(props) {
       const basicInfo = prevBasicInfoFormData
       const specAttrs = prevSpecAttrFormData
       const saleAttrs = prevSaleAttrFormData
-      const skuListFormData = await skuForm.validateFields();
-      const skuList = {
-        ...skuListFormData,
-        skuList: {...skuFormBaseData, ...skuListFormData.skuList}
-      }
-
-
-
-
-
-      // const productImageList = (basicInfo.productImageList ?? []).map((image) => image.originFileObj);
-      // const productImageUrlList = await googleCloudStorage.addAllProductImages(productImageList, constant.BLOB);
-
-      handleSubmit({basicInfo, specAttrs, saleAttrs, ...skuList})
+      // const skuListFormData = await skuForm.validateFields();
+      setSubmitting(true);
+      myFormUtils.validateAndScrollToError(skuForm).then(
+        skuListFormData => {
+          const skuList = {
+            ...skuListFormData,
+            skuList: {...skuFormBaseData, ...skuListFormData.skuList}
+          }
+          handleSubmit({basicInfo, specAttrs, saleAttrs, ...skuList}).then(
+            res => {
+              setSubmitting(false);
+              if (res) {
+                message.success('success');
+                history.push('/ecommerce/admin/product-manage/product/manage');
+              }
+            },
+            err => {
+              setSubmitting(false);
+              message.error('Failed to save');
+            }
+          )
+        },
+        err => {
+          setSubmitting(false);
+        }
+      )
     }
   }
   const handleSubmit = async ({
@@ -272,10 +287,9 @@ function Publish(props) {
         }
       })
     }
-    console.log('requestData', requestData)
-    productService.publishAll([requestData]).then((res) => {
 
-    })
+    await productService.publishAll([requestData])
+    return true
   }
 
   const BasicInfoForm = ({form}) => {
@@ -521,11 +535,13 @@ function Publish(props) {
       form.setFieldValue('skuList', newFormSkuList);
     }, [])
     const [imageFileList, setImageFileList] = useState([]);
+    const [outerActiveKeys, setOuterActiveKeys] = useState(['1', '2']);
+    const [expandedRowKeys, setExpandedRowKeys] = useState(skuList.map((sku, index) => index));
     return (
       <div>
         <Form form={form}
         >
-          <Collapse defaultActiveKey={['1', '2']}>
+          <Collapse activeKey={outerActiveKeys}>
             <Collapse.Panel header="Add Sku Images" key="1">
               {MyFormItem.Upload.MultiImage({
                 name: 'skuImages',
@@ -535,7 +551,7 @@ function Publish(props) {
                 }
               })}
             </Collapse.Panel>
-            <Collapse.Panel header="Sku information" key="2">
+            <Collapse.Panel header="Sku information" key="2" forceRender={true}>
               <Form.Item noStyle={true}>
                 <Table
                   columns={columns}
@@ -550,7 +566,6 @@ function Publish(props) {
                   }
                   expandable={{
                     expandedRowRender: (record) => {
-
                       return (
                         <Form.Item noStyle={true}>
                           <Row gutter={10}>
@@ -558,7 +573,7 @@ function Publish(props) {
                               <Form.Item
                                 name={['skuList', record._attrCombination, 'name']}
                                 label="Name"
-                                // rules={[{required: true, message: 'Please input name'}]}
+                                rules={[{required: true, message: 'Please input name'}]}
                               >
                                 <Input.TextArea autoSize={{minRows: 1, maxRows: 3}}/>
                               </Form.Item>
@@ -568,28 +583,41 @@ function Publish(props) {
                               <Form.Item
                                 name={['skuList', record._attrCombination, 'title']}
                                 label="Title"
-                                // rules={[{required: true, message: 'Please input title'}]}
+                                rules={[{required: true, message: 'Please input title'}]}
                               >
                                 <Input.TextArea autoSize={{minRows: 1, maxRows: 3}}/>
                               </Form.Item>
                             </Col>
-                            <Col span={10}>
+                            {/*<Col span={10}>*/}
+                            {/*  <Form.Item*/}
+                            {/*    name={['skuList', record._attrCombination, 'subTitle']}*/}
+                            {/*    label="Sub-Title"*/}
+                            {/*    rules={[{required: true, message: 'Please input subTitle'}]}*/}
+                            {/*  >*/}
+                            {/*    <Input.TextArea autoSize={{minRows: 1, maxRows: 3}}/>*/}
+                            {/*  </Form.Item>*/}
+                            {/*</Col>*/}
+                            <Col span={5}>
                               <Form.Item
-                                name={['skuList', record._attrCombination, 'subTitle']}
-                                label="Sub-Title"
-                                // rules={[{required: true, message: 'Please input subTitle'}]}
+                                name={['skuList', record._attrCombination, 'price']}
+                                label="Price $"
+                                rules={[{required: true, message: 'Please input price'}]}
                               >
-                                <Input.TextArea autoSize={{minRows: 1, maxRows: 3}}/>
+                                <InputNumber
+                                  min={0}
+                                  precision={2}
+                                  step={0.01}
+                                />
                               </Form.Item>
                             </Col>
                           </Row>
-
+                          {/*
                           <Row gutter={10}>
                             <Col span={5}>
                               <Form.Item
                                 name={['skuList', record._attrCombination, 'price']}
                                 label="Price $"
-                                // rules={[{required: true, message: 'Please input price'}]}
+                                rules={[{required: true, message: 'Please input price'}]}
                               >
                                 <InputNumber
                                   min={0}
@@ -602,7 +630,7 @@ function Publish(props) {
                               <Form.Item
                                 name={['skuList', record._attrCombination, 'giftCardBonus']}
                                 label="Gift Card Bonus $"
-                                // rules={[{required: true, message: 'Please input gift card bonus'}]}
+                                rules={[{required: true, message: 'Please input gift card bonus'}]}
                               >
                                 <InputNumber
                                   min={0}
@@ -614,7 +642,7 @@ function Publish(props) {
                               <Form.Item
                                 name={['skuList', record._attrCombination, 'primeDiscount']}
                                 label='Prime Discount %'
-                                // rules={[{required: true, message: 'Please input prime discount'}]}
+                                rules={[{required: true, message: 'Please input prime discount'}]}
                               >
                                 <InputNumber
                                   min={0}
@@ -624,10 +652,11 @@ function Publish(props) {
                               </Form.Item>
                             </Col>
                           </Row>
+                          */}
                           <Form.Item
                             name={['skuList', record._attrCombination, 'description']}
                             label="Description"
-                            // rules={[{required: true, message: 'Please input description'}]}
+                            rules={[{required: true, message: 'Please input description'}]}
                           >
                             <Input.TextArea
                               autoSize={{minRows: 1, maxRows: 5}}
@@ -637,7 +666,7 @@ function Publish(props) {
                           <Form.Item
                             name={['skuList', record._attrCombination, 'imageIdList']}
                             label="Images"
-                            // rules={[{required: true, message: 'Please input images'}]}
+                            rules={[{required: true, message: 'Please select images'}]}
                             shouldUpdate={(prevValues, currentValues) => {
 
                               setTimeout(() => { // NOTE 必须设置延迟， 图片上传有多个阶段， 每次form的值都会变化， 不设置延迟可能导致image显示不更新
@@ -667,7 +696,8 @@ function Publish(props) {
                           </Form.Item>
                         </Form.Item>
                       )
-                    }
+                    },
+                    expandedRowKeys: expandedRowKeys
                   }}
                 />
               </Form.Item>
@@ -699,7 +729,10 @@ function Publish(props) {
     }
   ]
   return (
-    <div>
+    <Spin
+      spinning={submitting}
+      tip={'Submitting...'}
+    >
       <MySteps
         current={current}
         setCurrent={setCurrent}
@@ -708,7 +741,7 @@ function Publish(props) {
       >
         {steps[current].content}
       </MySteps>
-    </div>
+    </Spin>
   )
 }
 

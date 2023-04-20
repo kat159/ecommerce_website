@@ -19,7 +19,7 @@ function Index(props) {
   }
   const categoryIds = searchParams.get('category')?.split(',') ?? []
   const skuId = searchParams.get('sku') ?? null;
-  console.log('skuId', skuId)
+
   return (
     <div>
       <Breadcrumb

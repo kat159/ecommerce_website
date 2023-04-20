@@ -7,7 +7,7 @@
       import { SwaggerUIBundle } from 'swagger-ui-dist';
       import 'swagger-ui-dist/swagger-ui.css';
       const App = () => {
-        const [value, setValue] = useState("dbms-order" );
+        const [value, setValue] = useState("openapi" );
         useEffect(() => {
           SwaggerUIBundle({
             url: `/umi-plugins_${value}.json`,
@@ -29,7 +29,7 @@
               }}
               onChange={(e) => setValue(e.target.value)}
             >
-              <option value="dbms-order">dbms-order</option>
+              
             </select>
             <div id="swagger-ui" />
           </div>

@@ -42,7 +42,7 @@ const EditForm = ({
   useEffect(() => {
     countryService.getAll({}).then(res => {
       setCounties(res.data)
-      console.log('res.data', res.data)
+
       form.setFieldsValue(initialData)
     })
   }, [])
@@ -61,7 +61,7 @@ const EditForm = ({
 
   useEffect(() => {
     if (selectedStateId) {
-      console.log('selectedStateId', selectedStateId)
+
       statesService
       .getAllCities({id: selectedStateId})
       .then(res => {
@@ -77,7 +77,7 @@ const EditForm = ({
     data.country = counties.find(country => country.id === data.countryId).name
     data.countryCode = counties.find(country => country.id === data.countryId).iso3
     data.stateCode = states.find(state => state.id === data.stateId).iso2
-    console.log('data', data, counties.find(country => country.id === data.countryId))
+
     onSubmit(data)
   }
 
@@ -155,7 +155,7 @@ function Address(props) {
       memberService
       .pageAddress({username: userInfo.username, params: pagination})
       .then(res => {
-        console.log('res', res.data)
+
         setPagination({...pagination, ...res.data})
       })
     } else {
@@ -246,13 +246,13 @@ function Address(props) {
     setEditingAddress({})
   }
   const onClickDelete = (record) => {
-    console.log('record', record)
+
   }
   const onClickCancel = () => {
     setStatus(IDLE)
   }
   const onClickSubmit = async (value) => {
-    console.log('submit', value)
+
     if (status === INSERT) {
       await memberService.addAddress({username: userInfo.username}, [value])
     } else if (status === EDIT) {

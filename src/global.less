@@ -1,7 +1,14 @@
 .my-click-icon:hover {
-  color: #1890ff;
+  color: #1890ff !important;
   border-color: #1890ff;
   cursor: pointer;
+}
+.my-click-icon-disabled {
+  //color: #d9d9d9;
+  //border-color: #d9d9d9;
+  &:hover {
+    cursor: not-allowed;
+  }
 }
 .ant-row-no-newline {
   flex-flow: nowrap;
@@ -14,6 +21,9 @@
   &:hover {
     cursor: pointer;
   }
+}
+.ant-collapse-header {
+  align-items: center !important;
 }
 //.ant-collapse-header {
 //  align-items: center !important;

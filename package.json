@@ -53,6 +53,8 @@
     "antd": "^5.0.0",
     "axios": "^1.2.3",
     "classnames": "^2.3.2",
+    "echarts": "^5.4.2",
+    "echarts-for-react": "^3.0.2",
     "firebase": "^9.16.0",
     "keycloak-js": "^21.0.0",
     "lodash": "^4.17.21",

@@ -19,7 +19,7 @@ export default function (props) {
   // }
   const {categoryForest, loading} = useModel('ECommerceFront.category');
   const {initialState, loading: initStateLoading, refresh, setInitialState} = useModel('@@initialState')
-  console.log('currentUser', initialState?.currentUser)
+
   const Head = () => {
     const Logo = (
       <span

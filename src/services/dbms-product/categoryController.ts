@@ -137,7 +137,22 @@ export async function getAll(
     ...(options || {}),
   });
 }
-
+export async function updateAllV2(body: API.CategoryManageDto, options?: { [key: string]: any }) {
+  return request<API.Result>('/product/category/manage', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+export async function forestV2(options?: { [key: string]: any }) {
+  return request<API.Result>('/product/category/manage/forest', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
 /** 此处后端没有提供注释 GET /product/category/forest */
 export async function forest(options?: { [key: string]: any }) {
   return request<API.Result>('/product/category/forest', {

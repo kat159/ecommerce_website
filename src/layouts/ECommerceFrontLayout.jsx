@@ -16,7 +16,7 @@ export default function (props) {
     userInfo, userLoading, fetchUserInfo,
     cart, cartLoading,
   } = useModel('ecommerceFront');
-  console.log('currentUser', currentUser, 'userInfo', userInfo, 'userLoading', userLoading)
+
   const [previewCartItems, setPreviewCartItems] = React.useState(null)
   const Head = () => {
     const Search = (
@@ -141,10 +141,10 @@ export default function (props) {
                         key: '/ecommerce/front/account/address',
                         label: <span>Address</span>,
                       },
-                      {
-                        key: '/ecommerce/front/account/browse-history',
-                        label: <span>Browse History</span>,
-                      },
+                      // {
+                      //   key: '/ecommerce/front/account/browse-history',
+                      //   label: <span>Browse History</span>,
+                      // },
                       {
                         key: '/ecommerce/front/account/order',
                         label: <span>Orders</span>,

@@ -124,10 +124,10 @@ export const ecommerceFrontRoutesArr = [
     // component: './ECommerceFront/UserAccount/Account.jsx',
     component: '../layouts/ECommerceFrontAccountLayout',
     routes: [
-      {
-        path: 'browse-history',
-        component: './ECommerceFront/UserAccount/BrowsingHistory.jsx',
-      },
+      // {
+      //   path: 'browse-history',
+      //   component: './ECommerceFront/UserAccount/BrowsingHistory.jsx',
+      // },
       {
         path: 'order',
         component: './ECommerceFront/UserAccount/Orders.jsx',
@@ -157,54 +157,57 @@ export const ecommerceFrontRoutesArr = [
 
 ]
 export const ecommerceAdminRoutesArr = [
-  {
-    path: 'user',
-    layout: false,
-    routes: [
-      {
-        name: 'login',
-        path: 'login',
-        component: './User/Login',
-      },
-    ],
-  },
-  {
-    path: 'welcome',
-    name: 'welcome',
-    icon: 'smile',
-    component: './Welcome',
-  },
-  {
-    path: 'admin',
-    name: 'admin',
-    icon: 'crown',
-    access: 'canAdmin',
-    routes: [
-      {
-        path: '',
-        redirect: 'sub-page',
-      },
-      {
-        path: 'sub-page',
-        name: 'sub-page',
-        component: './Admin',
-      },
-    ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: 'list',
-    component: './TableList',
-  },
+  // {
+  //   path: 'user',
+  //   layout: false,
+  //   routes: [
+  //     {
+  //       name: 'login',
+  //       path: 'login',
+  //       component: './User/Login',
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: 'welcome',
+  //   name: 'welcome',
+  //   icon: 'smile',
+  //   component: './Welcome',
+  // },
+  // {
+  //   path: 'admin',
+  //   name: 'admin',
+  //   icon: 'crown',
+  //   access: 'canAdmin',
+  //   routes: [
+  //     {
+  //       path: '',
+  //       redirect: 'sub-page',
+  //     },
+  //     {
+  //       path: 'sub-page',
+  //       name: 'sub-page',
+  //       component: './Admin',
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: 'list.table-list',
+  //   icon: 'table',
+  //   path: 'list',
+  //   component: './TableList',
+  // },
   {
     name: 'pms',
     path: 'product-manage',
+    flatMenu: true,
     routes: [
       {
         name: 'category',
         path: 'category',
         component: './ProductManagement2/Category.jsx',
+        // component: './ProductManagement2/Category2.jsx',
+        // component: './ProductManagement2/Category3/Category3.jsx',
       },
       {
         name: 'brand',
@@ -238,15 +241,40 @@ export const ecommerceAdminRoutesArr = [
         path: 'purchase',
         component: './ProductManagement2/Purchase.jsx',
       },
-      {
-        name: 'demo',
-        path: 'demo',
-        component: './ProductManagement/Demo.jsx',
-      },
+      // {
+      //   name: 'demo',
+      //   path: 'demo',
+      //   component: './ProductManagement/Demo.jsx',
+      // },
     ]
   },
   {
     path: '',
-    redirect: 'welcome',
+    redirect: 'product-manage',
   },
+]
+export const backtestRoutesArr = [
+  {
+    name: 'Market',
+    path: 'market',
+    component: './Backtest/Market.jsx',
+  },
+  {
+    name: 'Criterion',
+    path: 'criterion',
+    component: './Backtest/Criterion/Criterion.jsx',
+  },
+  {
+    path: '',
+    redirect: 'market',
+  },
+  {
+    path: '*',
+    redirect: '/backtest/market',
+  }
+  // {
+  //   name: 'market',
+  //   path: 'market',
+  //   component: './User/Login',
+  // }
 ]

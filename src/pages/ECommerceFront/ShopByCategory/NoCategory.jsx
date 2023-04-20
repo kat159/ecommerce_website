@@ -15,11 +15,11 @@ function NoCategory() {
       categoryPath.push(curCategory.id)
       curCategory = categoryIdMap[curCategory.parentId]
     }
-    console.log('categoryPath', categoryPath)
+
     history.push(`${window.location.pathname}?category=${categoryPath.reverse().join(',')}`);
   };
   const ShopCategory = () => {
-    console.log('childCategories', childCategories)
+
     const ByGrid = (
       <Card className={'card-grid-no-empty-border'}
         // bordered={false}
@@ -107,12 +107,12 @@ function NoCategory() {
       {
         title: 'AAphone',
         img: 'https://firebasestorage.googleapis.com/v0/b/ecommerce-6ee5d.appspot.com/o/home-ad%2Fpexels-negative-space-48605_11zon.jpg?alt=media&token=3bd6e6e2-62e2-4609-969f-03e55289ab30',
-        url: 'http://localhost:8000/ecommerce/front/category?category=1,2,3&sku=178',
+        url: '/ecommerce/front/category?category=1,2,3',
       },
       {
         title: 'Up to 50% off',
         img: 'https://firebasestorage.googleapis.com/v0/b/ecommerce-6ee5d.appspot.com/o/home-ad%2Fpexels-neosiam-594452.jpg?alt=media&token=cb5a87b8-2253-4632-b324-bc051fd1c478',
-        url: 'http://localhost:8000/ecommerce/front/category?category=1,2,3&sku=195',
+        url: '/ecommerce/front/category?category=1,2,3',
       }
 
     ]
@@ -165,7 +165,7 @@ function NoCategory() {
             </span>
           ),
           onTitleClick: (e) => {
-            console.log('CLICK title', category)
+
             onClickCategory({category})
           },
           children: category.children?.length > 0 ? getItems(category.children) : null,
@@ -183,10 +183,10 @@ function NoCategory() {
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
-            console.log(broken);
+
           }}
           onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
+
           }}
           style={{
             background: 'transparent',
@@ -202,7 +202,7 @@ function NoCategory() {
             // mode="vertical"
             items={items}
             onClick={e => {
-              console.log('CLICK', e)
+
               onClickCategory({category: categoryIdMap[e.key]})
             }}
           />
@@ -234,10 +234,10 @@ function NoCategory() {
         <CarouselAds/>
 
         <ShopCategory/>
-        <Typography.Title level={3}>Featured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured
-          ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured
-          ItemsFeatured ItemsFeatured Items</Typography.Title>
-        <Typography.Title level={3}>Featured Items</Typography.Title>
+        {/*<Typography.Title level={3}>Featured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured*/}
+        {/*  ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured ItemsFeatured*/}
+        {/*  ItemsFeatured ItemsFeatured Items</Typography.Title>*/}
+        {/*<Typography.Title level={3}>Featured Items</Typography.Title>*/}
       </Col>
     </Row>
   );

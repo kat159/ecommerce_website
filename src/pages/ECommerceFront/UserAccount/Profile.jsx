@@ -10,7 +10,7 @@ const memberService = dbmsMember.memberController
 
 function Profile(props) {
   const {userInfo, userLoading, fetchUserInfo} = useModel('ecommerceFront');
-  console.log('userInfo', userInfo)
+
   const [form] = Form.useForm();
   useEffect(() => {
     userInfo.birth = userInfo.birth ? moment(userInfo.birth) : moment()
@@ -20,7 +20,7 @@ function Profile(props) {
     const data = await form.validateFields();
     data.id = userInfo.id
     data.birth = moment(data.birth)
-    console.log('data', data)
+
     await memberService.updateAll([data]);
     message.success('Update success')
     fetchUserInfo()

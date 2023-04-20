@@ -14,7 +14,7 @@ const Home = () => {
           <span
             // onClick={(e) => {
             //   // e.stopPropagation()
-            //   console.log('CLICK label', category)
+
             //   onClickCategory({category})
             // }}
           >
@@ -24,7 +24,7 @@ const Home = () => {
             </span>
         ),
         onTitleClick: (e) => {
-          console.log('CLICK title', category)
+
           onClickCategory({category})
         },
         children: category.children?.length > 0 ? getItems(category.children) : null,
@@ -39,7 +39,7 @@ const Home = () => {
       categoryPath.push(curCategory.id)
       curCategory = categoryIdMap[curCategory.parentId]
     }
-    console.log('categoryPath', categoryPath)
+
     history.push(`${window.location.pathname}/category?category=${categoryPath.reverse().join(',')}`);
   };
   return (
@@ -51,10 +51,10 @@ const Home = () => {
         breakpoint="lg"
         collapsedWidth="0"
         onBreakpoint={(broken) => {
-          console.log(broken);
+
         }}
         onCollapse={(collapsed, type) => {
-          console.log(collapsed, type);
+
         }}
       >
         <Menu

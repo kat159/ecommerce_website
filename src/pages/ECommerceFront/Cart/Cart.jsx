@@ -38,7 +38,7 @@ const CartItems = () => {
     const {cart, cartLoading, fetchCart,
       checkOutSkus, setCheckOutSkus,
       checkoutOrderUUID, setCheckoutOrderUUID} = useModel('ecommerceFront');
-    console.log('cart', cart, 'cartLoading', cartLoading)
+
     const [cartSkuList, setCartSkuList] = useState([])
     const [detailedCartList, setDetailedCartList] = useState([])
     useEffect(() => {
@@ -63,7 +63,7 @@ const CartItems = () => {
             _selected: true,
           }
         })
-        console.log('newDetailedCartList', newDetailedCartList)
+
         setDetailedCartList(newDetailedCartList)
       })
     }, [])
@@ -76,7 +76,7 @@ const CartItems = () => {
       const orderService = dbmsOrder.orderController
       const res = await orderService.checkout({})
       setCheckoutOrderUUID(res.data.orderUUID)
-      console.log('res1111', res)
+
       setCheckOutSkus(checkedSkuList)
       history.push('/ecommerce/front/check-out', {
         orderUUID: res.data.orderUUID,
@@ -94,7 +94,7 @@ const CartItems = () => {
     //   }
     // }, [checkOutSkus])
     const subTotal = useMemo(() => {
-      console.log('detailedCartList', detailedCartList)
+
       const res = detailedCartList.reduce((acc, item) => {
         acc.price += (item.sku?.finalPrice ?? 0) * (item.quantity ?? 0)
         acc.count += item.quantity ?? 0
@@ -145,11 +145,18 @@ const CartItems = () => {
                     <Col style={{width: 150,}}>
                       <MyImage.FitSize url={item.sku.skuImages[0].img}/>
                     </Col>
-                    <Divider type={'vertical'} style={{height: '150px', alignSelf: 'center',}}/>
+                    <Divider type={'vertical'}
+                             style={{
+                               height: '150px', alignSelf: 'center',
+                               margin: '0 20px',
+                             }}
+                    />
                     <Col>
                       <Row>
-                        <Typography.Title level={5}>
-                          <a href="https://ant.design">{item.sku.name}</a>
+                        <Typography.Title level={5}
+                                          style={{marginTop: 0,}}
+                        >
+                          {item.sku.name}
                         </Typography.Title>
                       </Row>
                       {
@@ -236,7 +243,7 @@ const CartItems = () => {
                     <Col>
                       <span>
                         {
-                          item?.sku?.finalPrice && item.sku.finalPrice === item.sku.price && <Typography.Text
+                          item?.sku?.finalPrice && item.sku.finalPrice !== item.sku.price && <Typography.Text
                             style={{
                               fontSize: 11,
                               fontWeight: 400,

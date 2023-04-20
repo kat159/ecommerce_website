@@ -17,7 +17,7 @@ export type GlobalHeaderRightProps = {
 const Name = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
-  console.log('Name:', currentUser, currentUser?.name)
+
   const nameClassName = useEmotionCss(({ token }) => {
     return {
       width: '70px',

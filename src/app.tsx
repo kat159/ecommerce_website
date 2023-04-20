@@ -88,22 +88,22 @@ export async function getInitialState(): Promise<{
       // silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
     }
   )
-  console.log('auth', auth)
+
   if (!auth) {
     keycloak.login()
   }
   console.info("Authenticated");
   localStorage.setItem("bearer-token", keycloak.token);
   localStorage.setItem("refresh-token", keycloak.refreshToken);
-  console.log('keycloak', keycloak)
-  console.log('subject', keycloak.subject)
-  console.log('token', keycloak.token)
-  console.log('tokenParsed', keycloak.tokenParsed)
-  console.log('username', keycloak.tokenParsed.preferred_username)
-  console.log('roles', keycloak.tokenParsed.realm_access.roles)
-  console.log('is admin', keycloak.hasRealmRole('admin'), keycloak.tokenParsed.realm_access.roles.includes('admin'))
-  console.log('is customer', keycloak.hasRealmRole('customer'), keycloak.tokenParsed.realm_access.roles.includes('customer'))
-  console.log('token time', keycloak.tokenParsed.exp)
+
+
+
+
+
+
+
+
+
   setTimeout(() => {
     keycloak.updateToken(70).then((refreshed) => {
       if (refreshed) {
@@ -124,7 +124,7 @@ export async function getInitialState(): Promise<{
   }
   if (currentUser)
     currentUser.name = currentUser.name ?? currentUser.username
-  console.log('currentUser', currentUser)
+
   return {
     currentUser: currentUser,
     keycloak: keycloak,
@@ -136,7 +136,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
   const curPath = history.location.pathname;
   const isHome = curPath === '/' || curPath === '/home';
-  console.log('curPath', curPath, 'isHome', isHome)
+
   return {
     rightContentRender: () => <RightContent/>,
     // title: 'Admin',
@@ -184,10 +184,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     */
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined/>
-          <span>OpenAPI 文档</span>
-        </Link>,
+        // <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+        //   <LinkOutlined/>
+        //   <span>OpenAPI 文档</span>
+        // </Link>,
       ]
       : [],
     // 自定义 403 页面
@@ -198,17 +198,17 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
       return (
         <>
           {children}
-          <SettingDrawer
-            disableUrlParams
-            enableDarkTheme
-            settings={initialState?.settings}
-            onSettingChange={(settings) => {
-              setInitialState((preInitialState) => ({
-                ...preInitialState,
-                settings,
-              }));
-            }}
-          />
+          {/*<SettingDrawer*/}
+          {/*  disableUrlParams*/}
+          {/*  enableDarkTheme*/}
+          {/*  settings={initialState?.settings}*/}
+          {/*  onSettingChange={(settings) => {*/}
+          {/*    setInitialState((preInitialState) => ({*/}
+          {/*      ...preInitialState,*/}
+          {/*      settings,*/}
+          {/*    }));*/}
+          {/*  }}*/}
+          {/*/>*/}
         </>
       );
     },

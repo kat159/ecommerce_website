@@ -28,6 +28,8 @@ import ImageGallery from "react-image-gallery";
 import {TaobaoSquareFilled} from "@ant-design/icons";
 import dbmsMember from "@/services/dbms-member";
 import {useModel} from "umi";
+import constant from "@/utils/constant";
+
 const productService = dbmsProduct.productController;
 
 const ProductPage = ({
@@ -35,11 +37,16 @@ const ProductPage = ({
 }) => {
   const {
     userInfo,
-    cart, fetchCart, cartLoading
+    cart, fetchCart, cartLoading,
+    browseHistoryPagination, browseHistoryPaginationLoading
   } = useModel('ecommerceFront');
-  console.log('render111', data)
+
   // selected sale attributes, changed by click
   const productSaleAttrs = data.productAttributeValues.filter((item) => item.attributeType === 0 || item.attributeType === 2);
+  const productSpecAttrValuesMap = data.productAttributeValues.filter((item) => item.attributeType === 1).reduce((acc, cur) => {
+    acc[cur.attributeId] = cur.attributeValueList?.join(',');
+    return acc;
+  })
   const [selectedSaleAttrValuesMap, setSelectedSaleAttrValuesMap]
     = useState(
     productSaleAttrs.reduce((acc, cur) => {
@@ -47,26 +54,26 @@ const ProductPage = ({
       return acc;
     }, {})
   )
-  console.log(selectedSaleAttrValuesMap)
+
   // selected sku, change when selected sale attributes changed
   const [selectedSku, setSelectedSku] = useState(null);
   // change selected sku when selected sale attributes changed
   useEffect(() => {
     // TODO: 如果初始的selectedSaleAttrValuesMap的sku缺货/不存在，需要重新选择，要在初始前就判断筛选所有可用的选项
-    console.log(data.skus)
-    console.log('selectedSaleAttrValuesMap', selectedSaleAttrValuesMap)
+
+
     for (const sku of data.skus) {
       let match = true;
       for (const saleAttr of sku.saleAttrValues) {
         const {attributeId, attributeValue} = saleAttr;
-        console.log(attributeId, attributeValue, selectedSaleAttrValuesMap[attributeId])
+
         if (saleAttr.attributeValue !== selectedSaleAttrValuesMap[saleAttr.attributeId]) {
           match = false;
           break;
         }
       }
       if (match) {
-        console.log('match', sku)
+
         setSelectedSku(sku);
       }
     }
@@ -82,11 +89,11 @@ const ProductPage = ({
     }, {});
   }, [data.skuImages])
   const SkuImages = useMemo(() => {
-    // console.log('data.skuImages', data.skuImages)
+
   }, [data.skuImages])
   const LeftImageGallery = useMemo(() => {
     const imagesOfSelectedSku = selectedSku?.skuSkuImages?.map((item) => skuImageIdMap[item.skuImageId]) ?? [];
-    console.log('imagesOfSelectedSku', imagesOfSelectedSku)
+
     let imageData = imagesOfSelectedSku.map((imageComponent) => ({
       original: imageComponent,
       thumbnail: imageComponent,
@@ -132,7 +139,19 @@ const ProductPage = ({
     if (!selectedSku) {
       return null
     }
-    const {name, title, subtitle, price, stock, rating, saleCount, description, primeDiscount, giftCardBonus} = selectedSku;
+    const {
+      name,
+      title,
+      subtitle,
+      price,
+      stock,
+      rating,
+      ratingCount,
+      saleCount,
+      description,
+      primeDiscount,
+      giftCardBonus
+    } = selectedSku;
     const Price = (
       <div>
           <span
@@ -213,7 +232,7 @@ const ProductPage = ({
       </div>
     )
     const onClickAddToCart = () => {
-      console.log('add to cart', selectedSku)
+
       dbmsMember.memberController.addToCart(
         {username: userInfo.username},
         [{
@@ -232,7 +251,21 @@ const ProductPage = ({
         <Typography.Title level={3} ellipsis={{rows: 5,}} style={{marginTop: '0px',}}>
           {name}fgggggggggggggg ggggggggggggggggg gggggggggggggggggggggggggggg
         </Typography.Title>
-        <Rate disabled value={rating} style={{fontSize: '14px',}}/>
+        <span>
+          <Rate value={rating}
+                style={{
+                  fontSize: '18px',
+                }}
+                disabled
+          />
+          <span className="ant-rate-text"
+                style={{
+                  color: '#7a7a7a',
+                  fontSize: '14px',
+                }}
+          >({ratingCount})</span>
+        </span>
+
         <Divider style={{marginTop: '10px',}}/>
         <div>{Price}</div>
         <Title style={{marginTop: '10px',}} level={5} type="success">Stock: {stock}</Title>
@@ -243,9 +276,9 @@ const ProductPage = ({
       </div>
     )
   }, [selectedSku])
-
   const Detail = useMemo(() => {
-    const {attributeGroups} = data;
+    const {attributeGroups, productAttributeValues} = data;
+
     const AttributeGroups = () => {
       const AttributeGroup = ({attributeGroup}) => {
         const {name, attributes} = attributeGroup;
@@ -258,7 +291,7 @@ const ProductPage = ({
                 if (selectedSaleAttrValuesMap[attrId]) {
                   attrValue = selectedSaleAttrValuesMap[attrId];
                 } else {
-                  attrValue = selectableValueList.join(', ');
+                  attrValue = productSpecAttrValuesMap[attrId] || 'Not Specified';
                 }
                 return <Descriptions.Item
                   label={attribute.name}
@@ -283,21 +316,47 @@ const ProductPage = ({
         </div>
       );
     };
-
+    const Overview = () => {
+      return (
+        <div>
+          <Typography.Title level={3}>
+            Description:
+          </Typography.Title>
+          <Typography.Paragraph>
+            {data.description}
+          </Typography.Paragraph>
+          {
+            data.images?.map((image, index) => {
+              return (
+                <div key={index}>
+                  <Typography.Title level={3}>
+                    {image.name}
+                  </Typography.Title>
+                  <MyImage.FitSize url={image.url}/>
+                </div>
+              )
+            })
+          }
+        </div>
+      )
+    }
     return (
       <Tabs
         defaultActiveKey="1"
         type="card"
+        style={{
+          minHeight: '300px',
+        }}
         items={[
           {
             key: '1',
-            label: 'Description',
+            label: 'Specifications',
             children: <AttributeGroups/>,
           },
           {
             key: '2',
-            label: 'Specifications',
-            children: <AttributeGroups/>,
+            label: 'Overview',
+            children: <Overview/>,
           }
         ]}
       >
@@ -317,9 +376,10 @@ const ProductPage = ({
             {RightProductInfo}
           </Col>
         </Row>
-        <Divider />
+        <Divider/>
         <Row>
-          <Col flex={'auto'} className={'product-page-detail'}>
+          <Col flex={'auto'} className={'product-page-detail'}
+          >
             {Detail}
           </Col>
         </Row>
@@ -333,10 +393,10 @@ function Product({
 }) {
   const [data, setData] = React.useState(null);
   useEffect(() => {
-    console.log("skuId11", skuId)
+
     if (skuId !== undefined && skuId !== null) {
       productService.getDetailBySkuId({id: skuId}).then((res) => {
-        console.log("res11", res);
+
         setData(res.data);
       })
     }
@@ -345,7 +405,7 @@ function Product({
     // data && <PhoneProductPage data={data}/>
     data ? <ProductPage
       data={data}
-    /> : <Spin />
+    /> : <Spin/>
     // 1
   )
 }

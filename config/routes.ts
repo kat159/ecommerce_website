@@ -127,7 +127,7 @@
 // ];
 
 import {ecommerceAdminRoutes, ecommerceFrontRoutes} from './childrenRoutes'
-import {ecommerceAdminRoutesArr, ecommerceFrontRoutesArr} from "./childrenRoutes";
+import {ecommerceAdminRoutesArr, ecommerceFrontRoutesArr, backtestRoutesArr} from "./childrenRoutes";
 
 export default [
   {
@@ -160,9 +160,12 @@ export default [
     layout: false,
     routes: ecommerceFrontRoutesArr
   },
-
-  // ecommerceFrontRoutes,
-  // ecommerceAdminRoutes,
+  {
+    layout: false,
+    path: '/backtest',
+    component: '../layouts/BacktestLayout',
+    routes: backtestRoutesArr
+  },
   {
     path: '*',
     layout: false,

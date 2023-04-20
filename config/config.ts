@@ -13,7 +13,7 @@ export default defineConfig({
    * @description 让 build 之后的产物包含 hash 后缀。通常用于增量发布和避免浏览器加载缓存。
    * @doc https://umijs.org/docs/api/config#hash
    */
-  hash: true,
+  hash: false,
 
   /**
    * @name 兼容性设置
@@ -173,18 +173,18 @@ export default defineConfig({
     //   projectName: 'country',
     //   mock: false,
     // },
-    {
-      // order service
-      requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: "http://localhost:9000/v3/api-docs/",
-      projectName: 'dbms-order',
-      mock: false,
-    },
+    // {
+    //   // order service
+    //   requestLibPath: "import { request } from '@umijs/max'",
+    //   schemaPath: "http://localhost:9000/v3/api-docs/",
+    //   projectName: 'dbms-order',
+    //   mock: false,
+    // },
     // {
     //   // product service
     //   requestLibPath: "import { request } from '@umijs/max'",
     //   schemaPath: "http://localhost:10000/v3/api-docs/",
-    //   projectName: 'dbms-product',
+    //   projectName: 'dbms-product-edited',
     //   mock: false,
     // },
     // {

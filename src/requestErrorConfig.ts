@@ -41,10 +41,10 @@ export const errorConfig: RequestConfig = {
     },
     // 错误接收及处理
     errorHandler: (error: any, opts: any) => {
-      console.log('errorHandler', error, opts);
+
       const res = error?.response?.data;
-      console.log('res', res);
-      console.log('msg', res?.data)
+
+
       if (res?.data?.localizedMessage) {
         message.warning(res.data.localizedMessage);
         return

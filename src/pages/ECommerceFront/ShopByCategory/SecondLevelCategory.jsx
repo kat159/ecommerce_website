@@ -13,7 +13,7 @@ function SecondLevelCategory({
   curCategory
 }) {
   const {categoryIdMap} = useModel('ECommerceFront.category');
-  console.log('curCategory', curCategory)
+
   const childCategories = curCategory.children;
   const onClickCategory = ({category}) => {
     const categoryPath = []
@@ -22,11 +22,11 @@ function SecondLevelCategory({
       categoryPath.push(curCategory.id)
       curCategory = categoryIdMap[curCategory.parentId]
     }
-    console.log('categoryPath', categoryPath)
+
     history.push(`${window.location.pathname}?category=${categoryPath.reverse().join(',')}`);
   };
   const ShopCategory = () => {
-    console.log('childCategories', childCategories)
+
     const ByRow = (
       <Row className={'ant-row-no-newline'}
       >
@@ -97,7 +97,7 @@ function SecondLevelCategory({
             </span>
           ),
           onTitleClick: (e) => {
-            console.log('CLICK title', category)
+
             onClickCategory({category})
           },
           children: category.children?.length > 0 ? getItems(category.children) : null,
@@ -114,10 +114,10 @@ function SecondLevelCategory({
           breakpoint="lg"
           collapsedWidth="0"
           onBreakpoint={(broken) => {
-            console.log(broken);
+
           }}
           onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
+
           }}
           style={{background: 'transparent', fontWeight: 'bold'}}
         >
@@ -130,7 +130,7 @@ function SecondLevelCategory({
             // mode="vertical"
             items={items}
             onClick={e => {
-              console.log('CLICK', e)
+
               onClickCategory({category: categoryIdMap[e.key]})
             }}
           />
@@ -159,7 +159,6 @@ function SecondLevelCategory({
       >
         <Typography.Title level={3}>Advertisement Carousel</Typography.Title>
         <ShopCategory/>
-        <Typography.Title level={3}>Featured Items</Typography.Title>
       </Col>
     </Row>
   );

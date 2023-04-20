@@ -13,8 +13,8 @@ export default function (props) {
   const {initialState, loading: initStateLoading, refresh, setInitialState} = useModel('@@initialState')
   const {currentUser} = initialState || {}; // current user是注册中心的，具体的当前app的用户要从app的数据拿
   const {userInfo, userLoading, fetchUserInfo} = useModel('ecommerceFront');
-  console.log('currentUser', currentUser, 'userInfo', userInfo, 'userLoading', userLoading)
-  console.log('path', history.location.pathname.split('/').length)
+
+
   const location = useLocation();
   const curPath = location.pathname.split('/')[location.pathname.split('/').length - 1]
   const curPathTitle =
